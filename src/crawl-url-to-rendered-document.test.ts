@@ -87,6 +87,12 @@ describe("crawlUrlToRenderedDocument", () => {
     },
     20_000
   );
+
+  test("rejects invalid URLs with a stable error message", async () => {
+    await expect(crawlUrlToRenderedDocument("not-a-url")).rejects.toThrow(
+      "Invalid URL: not-a-url"
+    );
+  });
 });
 
 function routeRequest(request: IncomingMessage, response: ServerResponse): void {

@@ -29,7 +29,7 @@ The repository now includes two small, test-covered layers:
 Current scope:
 
 - `url -> RenderedDocument` using `Crawlee + Playwright`
-- parse HTML strings
+- legacy `HTML string -> TOON` conversion path
 - extract text, links, images
 - drop empty wrappers and whitespace-only content
 - serialize flattened TOON output
@@ -39,3 +39,4 @@ Not implemented yet:
 - iframe traversal
 - cache and CLI flows
 - `RenderedDocument -> TOON` contract rewrite
+- large rendered HTML pruning before TOON conversion

@@ -12,15 +12,19 @@ export async function crawlUrlToRenderedDocument(
   url: string,
   options: CrawlUrlToRenderedDocumentOptions = {}
 ): Promise<RenderedDocument> {
+  validateUrl(url);
+
   const navigationTimeoutMs = options.navigationTimeoutMs ?? 15_000;
-  const stabilizationTimeMs = options.stabilizationTimeMs ?? 250;
-  const browser = await launchPlaywright({
-    launchOptions: {
-      headless: options.headless ?? true
-    }
-  });
+  const stabilizationTimeMs = options.stabilizationTimeMs ?? 1_200;
+  let browser;
 
   try {
+    browser = await launchPlaywright({
+      launchOptions: {
+        headless: options.headless ?? true
+      }
+    });
+
     const page = await browser.newPage();
 
     await page.goto(url, {
@@ -44,7 +48,21 @@ export async function crawlUrlToRenderedDocument(
       title,
       bodyHtml
     };
+  } catch (error) {
+    throw new Error(
+      `Failed to render document for ${url}: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   } finally {
-    await browser.close();
+    await browser?.close();
+  }
+}
+
+function validateUrl(url: string): void {
+  try {
+    new URL(url);
+  } catch {
+    throw new Error(`Invalid URL: ${url}`);
   }
 }
