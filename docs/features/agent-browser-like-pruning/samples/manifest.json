@@ -1,0 +1,202 @@
+[
+  {
+    "slug": "docs-generic",
+    "rawPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/docs-generic-raw.html",
+    "reducedPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/docs-generic-reduced.html",
+    "preservedSignals": [
+      "Version 3.14",
+      "API Reference",
+      "Parse and emit structured documents."
+    ],
+    "reduced": {
+      "url": "https://docs.python.org/3/library/json.html",
+      "finalUrl": "https://docs.python.org/3/library/json.html",
+      "fetchedAt": "2026-03-19T00:00:00Z",
+      "title": "JSON Module Docs",
+      "bodyHtml": "<header><nav><a>Overview</a><a>How to Use</a><a>API Reference</a><button>Search docs</button></nav></header><main><article><h1>JSON Module Docs</h1><p>Parse and emit structured documents.</p><h2>How to encode custom objects</h2><p>The module always produces string output.</p></article></main>",
+      "mode": "docs",
+      "identity": [
+        "JSON Module Docs",
+        "Parse and emit structured documents."
+      ],
+      "facts": [
+        "Version 3.14"
+      ],
+      "structure": [
+        {
+          "heading": "content-nav",
+          "items": [
+            "Overview",
+            "API Reference"
+          ]
+        },
+        {
+          "heading": "tools",
+          "items": [
+            "Search docs",
+            "Send feedback"
+          ]
+        }
+      ],
+      "content": [
+        "JSON Module Docs",
+        "Parse and emit structured documents.",
+        "How to encode custom objects",
+        "The module always produces string output."
+      ],
+      "interactions": [
+        "Search docs",
+        "Send feedback"
+      ]
+    }
+  },
+  {
+    "slug": "package-generic",
+    "rawPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/package-generic-raw.html",
+    "reducedPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/package-generic-reduced.html",
+    "preservedSignals": [
+      "pip install httpx",
+      "License BSD-3-Clause",
+      "A next-generation HTTP client."
+    ],
+    "reduced": {
+      "url": "https://pypi.org/project/httpx/",
+      "finalUrl": "https://pypi.org/project/httpx/",
+      "fetchedAt": "2026-03-19T00:00:00Z",
+      "title": "httpx · PyPI",
+      "bodyHtml": "<aside><a>Readme</a><a>Versions</a><button>Copy install command</button></aside><main><article><h1>httpx</h1><p>A next-generation HTTP client.</p><pre>pip install httpx</pre><p>License BSD-3-Clause</p></article></main>",
+      "mode": "package-page",
+      "identity": [
+        "httpx · PyPI",
+        "httpx",
+        "A next-generation HTTP client."
+      ],
+      "facts": [
+        "Version 1.4.0",
+        "License BSD-3-Clause",
+        "pip install httpx",
+        "Homepage https://www.python-httpx.org/",
+        "Repository github.com/encode/httpx"
+      ],
+      "structure": [
+        {
+          "heading": "tabs",
+          "items": [
+            "Readme",
+            "Versions"
+          ]
+        },
+        {
+          "heading": "meta-links",
+          "items": [
+            "Homepage https://www.python-httpx.org/",
+            "Repository github.com/encode/httpx"
+          ]
+        }
+      ],
+      "content": [
+        "A next-generation HTTP client."
+      ],
+      "interactions": [
+        "Copy install command",
+        "Search packages"
+      ]
+    }
+  },
+  {
+    "slug": "map-generic",
+    "rawPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/map-generic-raw.html",
+    "reducedPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/map-generic-reduced.html",
+    "preservedSignals": [
+      "Moonlight Cafe",
+      "리뷰 42",
+      "평균 18,000원"
+    ],
+    "reduced": {
+      "url": "https://map.naver.com/p/smart-around/place/2",
+      "finalUrl": "https://map.naver.com/p/smart-around/place/2",
+      "fetchedAt": "2026-03-19T00:00:00Z",
+      "title": "장소 - 네이버지도",
+      "bodyHtml": "<header><nav><a>지도 홈</a><a>길찾기</a><button>저장</button></nav></header><main><section><h1>Moonlight Cafe</h1><p>카페</p><p>조용한 분위기와 늦은 영업시간</p><p>리뷰 42</p><p>평균 18,000원</p></section></main>",
+      "mode": "map-view",
+      "identity": [
+        "장소 - 네이버지도",
+        "Moonlight Cafe",
+        "카페",
+        "조용한 분위기와 늦은 영업시간"
+      ],
+      "facts": [
+        "리뷰 42",
+        "평균 18,000원"
+      ],
+      "structure": [
+        {
+          "heading": "selected-panel",
+          "items": [
+            "조용한 분위기와 늦은 영업시간"
+          ]
+        }
+      ],
+      "content": [
+        "조용한 분위기와 늦은 영업시간"
+      ],
+      "interactions": [
+        "저장",
+        "공유하기"
+      ]
+    }
+  },
+  {
+    "slug": "marketing-generic",
+    "rawPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/marketing-generic-raw.html",
+    "reducedPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/marketing-generic-reduced.html",
+    "preservedSignals": [
+      "Pricing",
+      "Build faster internal tools.",
+      "Get started"
+    ],
+    "reduced": {
+      "url": "https://apple.com/acme-cloud",
+      "finalUrl": "https://apple.com/acme-cloud",
+      "fetchedAt": "2026-03-19T00:00:00Z",
+      "title": "Acme Cloud",
+      "bodyHtml": "<header><nav><a>Products</a><a>Pricing</a><a>Developers</a></nav></header><main><section><h1>Acme Cloud</h1><p>Build faster internal tools.</p><p>Deploy automation across your team.</p><button>Get started</button></section></main>",
+      "mode": "marketing-media",
+      "identity": [
+        "Acme Cloud",
+        "Build faster internal tools."
+      ],
+      "facts": [
+        "Pricing"
+      ],
+      "structure": [
+        {
+          "heading": "site-ia",
+          "items": [
+            "Products",
+            "Pricing",
+            "Developers",
+            "Compare plans"
+          ]
+        },
+        {
+          "heading": "calls-to-action",
+          "items": [
+            "Get started",
+            "Learn more",
+            "Compare plans"
+          ]
+        }
+      ],
+      "content": [
+        "Build faster internal tools.",
+        "Deploy automation across your team."
+      ],
+      "interactions": [
+        "Get started",
+        "Learn more",
+        "Compare plans"
+      ]
+    }
+  }
+]

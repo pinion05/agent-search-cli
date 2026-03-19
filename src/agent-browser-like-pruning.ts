@@ -1,7 +1,133 @@
 import { chromium } from "playwright";
 import { getEnhancedSnapshot } from "agent-browser/dist/snapshot.js";
 
-import type { AgentBrowserOracle, ReducedDocument, ReducedDocumentSection, RenderedDocument } from "./types";
+import type {
+  AgentBrowserOracle,
+  ReducedDocument,
+  ReducedDocumentSection,
+  RenderedDocument
+} from "./types";
+
+const DOCS_FACT_PATTERNS = [/Version\s*\d+(?:\.\d+)*/i, /\bApp Router\b/i, /\bPages Router\b/i];
+const DOCS_NAV_PATTERNS = [
+  /getting started|guides?|tutorials?|reference|api reference|overview|introduction|quick start|installation|project structure|routing|router|configuration|deployment|deploying|migration|upgrade|on this page/i
+];
+const DOCS_INTERACTION_PATTERNS = [/search/i, /feedback/i, /copy/i, /open in/i];
+
+const PACKAGE_FACT_PATTERNS = [
+  /npm i [^\s]+/i,
+  /pnpm add [^\s]+/i,
+  /yarn add [^\s]+/i,
+  /bun add [^\s]+/i,
+  /pip install [^\s]+/i,
+  /Version\s*[0-9][\w.-]*/i,
+  /License\s*[A-Z0-9.-]+/i,
+  /^Homepage.*$/i,
+  /^Documentation.*$/i,
+  /^Repository.*$/i,
+  /^Releases?.*$/i,
+  /^Weekly Downloads.*$/i,
+  /^Dependents.*$/i
+];
+const PACKAGE_TAB_PATTERNS = [
+  /^Readme$/i,
+  /^Code$/i,
+  /Dependencies/i,
+  /Dependents/i,
+  /Versions?/i,
+  /^Documentation$/i,
+  /^API$/i
+];
+const PACKAGE_INTERACTION_PATTERNS = [/search/i, /copy install/i, /^install$/i, /^open$/i];
+
+const PLACE_FACT_PATTERNS = [
+  /평점\s*[0-9.]+/i,
+  /후기\s*\d+개?/i,
+  /블로그\s*\d+개?/i,
+  /영업\s*(?:전|마감)[^\n]{0,30}/i,
+  /영업시간\s*[:0-9]/i,
+  /^주소.*$/i,
+  /^전화.*$/i,
+  /\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d{2}/,
+  /[0-9,]+원/i
+];
+const PLACE_TAB_PATTERNS = [/^홈$/i, /^메뉴$/i, /^사진$/i, /^후기$/i, /^블로그$/i, /^랭킹$/i];
+const PLACE_INTERACTION_PATTERNS = [/로드뷰/i, /공유/i, /즐겨찾기/i, /출발/i, /도착/i, /수정제안/i];
+
+const MAP_FACT_PATTERNS = [
+  /리뷰\s*\d+/i,
+  /평균(?:\s*가격)?\s*[0-9,]+원/i,
+  /별점\s*[0-9.]+/i,
+  /예약 가능/i,
+  /영업시간\s*[:0-9]/i,
+  /주차/i
+];
+const MAP_PANEL_EXCLUDE_PATTERNS = [
+  /지도 홈|길찾기|버스|지하철|기차|더보기|오류신고|확대|축소|거리뷰|일반지도|위성지도|테마|공유하기|패널 접기|저장|접속위치|new$/i
+];
+const MAP_INTERACTION_PATTERNS = [/저장/i, /패널 접기/i, /공유하기/i, /길찾기/i];
+
+const FORUM_FLOW_PATTERNS = [
+  /^답변하기$/i,
+  /^답변$/i,
+  /^최적$/i,
+  /^추천순$/i,
+  /^댓글/i,
+  /^Accepted$/i,
+  /^Answers?$/i,
+  /^Comments?$/i,
+  /^Votes?$/i,
+  /^Newest$/i
+];
+const FORUM_FACT_PATTERNS = [/답변\s*\d+/i, /댓글\s*\d+/i, /조회\s*\d+/i, /views?\s*\d+/i];
+
+const MARKETING_IA_PATTERNS = [
+  /^Research$/i,
+  /^Products?$/i,
+  /^Solutions?$/i,
+  /^For Business$/i,
+  /^For Developers$/i,
+  /^Developers?$/i,
+  /^Company$/i,
+  /^News$/i,
+  /^Pricing$/i,
+  /^Compare/i,
+  /^Shop/i,
+  /^API$/i,
+  /^ChatGPT$/i,
+  /^Sora$/i
+];
+const MARKETING_CTA_PATTERNS = [
+  /Get started/i,
+  /Learn more/i,
+  /Try/i,
+  /Compare/i,
+  /Shop/i,
+  /Buy/i,
+  /Subscribe/i,
+  /Contact sales/i,
+  /Watch now/i,
+  /Read more/i
+];
+const MARKETING_FACT_PATTERNS = [
+  /조회수[^.!?]{0,30}/i,
+  /views?[^.!?]{0,30}/i,
+  /pricing/i,
+  /lineup/i,
+  /posted/i,
+  /channels?/i
+];
+
+const GENERIC_SHELL_PATTERNS = [
+  /^search$/i,
+  /^sign in$/i,
+  /^log in$/i,
+  /^skip to content$/i,
+  /^menu$/i,
+  /^open menu$/i,
+  /^close$/i,
+  /^home$/i
+];
 
 export function buildReducedDocumentFromOracle(
   document: RenderedDocument,
@@ -17,10 +143,10 @@ export function buildReducedDocumentFromOracle(
   return {
     ...document,
     mode,
-    identity: buildIdentity(document.title, mode, textChunks, snapshotLabels),
+    identity: buildIdentity(document.title, mode, textChunks, snapshotLabels, interactiveLabels),
     facts: buildFacts(mode, textChunks, snapshotLabels),
     structure: buildStructure(mode, textChunks, snapshotLabels, interactiveLabels),
-    content: buildContent(mode, textChunks, snapshotLabels),
+    content: buildContent(mode, textChunks, snapshotLabels, interactiveLabels),
     interactions: buildInteractions(mode, interactiveLabels, snapshotLabels)
   };
 }
@@ -111,11 +237,7 @@ function detectMode(url: string): ReducedDocument["mode"] {
     return "docs";
   }
 
-  if (
-    url.includes("npmjs.com") ||
-    url.includes("pypi.org") ||
-    url.includes("github.com")
-  ) {
+  if (url.includes("npmjs.com") || url.includes("pypi.org") || url.includes("github.com")) {
     return "package-page";
   }
 
@@ -131,11 +253,7 @@ function detectMode(url: string): ReducedDocument["mode"] {
     return "forum-qna";
   }
 
-  if (
-    url.includes("openai.com") ||
-    url.includes("apple.com") ||
-    url.includes("youtube.com")
-  ) {
+  if (url.includes("openai.com") || url.includes("apple.com") || url.includes("youtube.com")) {
     return "marketing-media";
   }
 
@@ -146,17 +264,27 @@ function buildIdentity(
   title: string,
   mode: ReducedDocument["mode"],
   textChunks: string[],
-  snapshotLabels: string[]
+  snapshotLabels: string[],
+  interactiveLabels: string[]
 ) {
-  const values = [title];
+  const values = [...extractIdentityFromTitle(title, mode)];
+  const candidates =
+    mode === "place-detail" || mode === "map-view"
+      ? [...textChunks, ...snapshotLabels]
+      : textChunks;
 
-  if (mode === "place-detail") {
-    values.push(...pickMatched([...textChunks, ...snapshotLabels], [/판교옥/i, /한식/i], 3, 40));
-  }
-
-  if (mode === "map-view") {
-    values.push(...pickMatched([...textChunks, ...snapshotLabels], [/이스트만/i, /바\(BAR\)/i], 3, 60));
-  }
+  values.push(
+    ...pickIdentityCandidates(candidates, {
+      maxItems: mode === "place-detail" || mode === "map-view" ? 3 : 2,
+      maxLen: 80,
+      excludePatterns: [
+        ...getFactPatterns(mode),
+        ...getStructurePatterns(mode),
+        ...getInteractionPatterns(mode, interactiveLabels),
+        ...GENERIC_SHELL_PATTERNS
+      ]
+    })
+  );
 
   return unique(values).slice(0, 5);
 }
@@ -166,71 +294,15 @@ function buildFacts(
   textChunks: string[],
   snapshotLabels: string[]
 ) {
-  const combined = [...textChunks, ...snapshotLabels];
-
-  if (mode === "docs") {
-    return pickMatched(combined, [/Version\s*\d+/i, /App Router/i, /Pages Router/i], 6, 40);
-  }
-
-  if (mode === "package-page") {
-    return pickMatched(
-      combined,
-      [
-        /npm i [^\s]+/i,
-        /Version\s*[0-9.]+/i,
-        /License\s*[A-Z0-9.-]+/i,
-        /^Homepage/i,
-        /^Documentation/i,
-        /^Repository/i,
-        /^Releases/i,
-        /^Weekly Downloads/i
-      ],
-      10,
-      80
-    );
-  }
-
-  if (mode === "place-detail") {
-    return pickMatched(
-      combined,
-      [
-        /평점\s*[0-9.]+/i,
-        /후기\s*\d+개?/i,
-        /블로그\s*\d+개?/i,
-        /영업 전\s*[0-9:]+\s*오픈/i,
-        /영업 마감\s*[0-9:]+\s*오픈/i,
-        /영업정보/i,
-        /^주소/i,
-        /[0-9,]+원/i
-      ],
-      10,
-      80
-    );
-  }
-
   if (mode === "map-view") {
-    return pickMatched(
-      combined,
-      [/이스트만/i, /리뷰\s*\d+/i, /평균\s*[0-9,]+원/i, /양식/i, /소울굴/i, /미채/i, /예약 가능/i],
-      8,
-      100
-    );
+    const primaryFacts = pickFactMatches(textChunks, MAP_FACT_PATTERNS, 6, 100);
+    return primaryFacts.length > 0
+      ? primaryFacts
+      : pickFactMatches(snapshotLabels, MAP_FACT_PATTERNS, 6, 100);
   }
 
-  if (mode === "forum-qna") {
-    return pickMatched(combined, [/최적/i, /추천순/i, /댓글\s*\d+/i, /답변\s*\d+/i], 8, 80);
-  }
-
-  if (mode === "marketing-media") {
-    return pickMatched(
-      combined,
-      [/조회수[^.!?]{0,30}/i, /^Research$/i, /^For Business$/i, /^Company$/i, /^Safety$/i, /^ChatGPT/i, /^Sora$/i, /^API$/i],
-      8,
-      80
-    );
-  }
-
-  return [];
+  const combined = [...textChunks, ...snapshotLabels];
+  return pickFactMatches(combined, getFactPatterns(mode), 10, 100);
 }
 
 function buildStructure(
@@ -240,144 +312,115 @@ function buildStructure(
   interactiveLabels: string[]
 ): ReducedDocumentSection[] {
   if (mode === "docs") {
-    return [
+    return compactSections([
       {
         heading: "content-nav",
-        items: pickMatched(
-          snapshotLabels,
-          [/Getting Started/i, /^Guides$/i, /API Reference/i, /On this page/i, /App Router/i, /Version 16/i],
-          8,
-          40
-        )
+        items: pickMatched(snapshotLabels, DOCS_NAV_PATTERNS, 8, 60)
       },
       {
         heading: "tools",
-        items: pickMatched(interactiveLabels, [/Search/i, /Feedback/i], 4, 40)
+        items: pickMatched(interactiveLabels, DOCS_INTERACTION_PATTERNS, 4, 40)
       }
-    ];
+    ]);
   }
 
   if (mode === "package-page") {
-    return [
+    return compactSections([
       {
         heading: "tabs",
-        items: pickMatched(snapshotLabels, [/^Readme$/i, /^Code/i, /Dependents/i, /Versions/i], 6, 40)
+        items: pickMatched(snapshotLabels, PACKAGE_TAB_PATTERNS, 6, 40)
       },
       {
         heading: "meta-links",
-        items: pickMatched(snapshotLabels, [/^Homepage/i, /^Repository/i, /^Documentation/i, /^Releases/i], 6, 60)
+        items: pickMatched(snapshotLabels, PACKAGE_FACT_PATTERNS, 6, 80)
       }
-    ];
+    ]);
   }
 
   if (mode === "place-detail") {
-    return [
+    return compactSections([
       {
         heading: "tabs",
-        items: pickMatched(snapshotLabels, [/^홈$/i, /^메뉴$/i, /^사진$/i, /^후기$/i, /^블로그$/i, /^랭킹$/i], 8, 20)
+        items: pickMatched(snapshotLabels, PLACE_TAB_PATTERNS, 8, 20)
       }
-    ];
+    ]);
   }
 
   if (mode === "map-view") {
-    return [
+    return compactSections([
       {
         heading: "selected-panel",
-        items: pickMatched(snapshotLabels, [/이스트만/i, /소울굴/i, /미채/i], 4, 100)
+        items: pickMeaningfulText([...snapshotLabels, ...textChunks], {
+          maxItems: 4,
+          maxLen: 120,
+          excludePatterns: [
+            ...MAP_PANEL_EXCLUDE_PATTERNS,
+            ...MAP_INTERACTION_PATTERNS,
+            ...MAP_FACT_PATTERNS
+          ]
+        })
       }
-    ];
+    ]);
   }
 
   if (mode === "forum-qna") {
-    return [
+    return compactSections([
       {
         heading: "sort-and-flow",
-        items: pickMatched(snapshotLabels, [/답변하기/i, /^답변$/i, /^최적$/i, /^추천순$/i, /^댓글/i], 8, 80)
+        items: pickMatched(snapshotLabels, FORUM_FLOW_PATTERNS, 8, 80)
       }
-    ];
+    ]);
   }
 
   if (mode === "marketing-media") {
-    return [
+    return compactSections([
       {
         heading: "site-ia",
-        items: pickMatched(
-          snapshotLabels,
-          [/^Research$/i, /^For Business$/i, /^For Developers$/i, /^Company$/i, /^News$/i, /^Compare/i, /^Shop/i, /^ChatGPT/i, /^Sora$/i, /^API$/i],
-          10,
-          60
-        )
+        items: pickMatched(snapshotLabels, MARKETING_IA_PATTERNS, 10, 60)
       },
       {
         heading: "calls-to-action",
-        items: pickMatched([...interactiveLabels, ...textChunks], [/Get started/i, /Try ChatGPT/i, /^Compare/i, /^Shop/i], 6, 60)
+        items: pickMatched(
+          [...interactiveLabels, ...textChunks],
+          MARKETING_CTA_PATTERNS,
+          6,
+          60
+        )
       }
-    ];
+    ]);
   }
 
-  return [];
+  return compactSections([
+    {
+      heading: "structure",
+      items: pickMeaningfulText(snapshotLabels, {
+        maxItems: 6,
+        maxLen: 60,
+        excludePatterns: [...GENERIC_SHELL_PATTERNS]
+      })
+    }
+  ]);
 }
 
 function buildContent(
   mode: ReducedDocument["mode"],
   textChunks: string[],
-  snapshotLabels: string[]
+  snapshotLabels: string[],
+  interactiveLabels: string[]
 ) {
-  if (mode === "docs") {
-    return pickMatched(
-      textChunks,
-      [/Next\.js Docs/i, /Welcome to the Next\.js documentation/i, /What is Next\.js\?/i, /React framework/i, /JavaScript \(JS\)/i],
-      6,
-      140
-    );
-  }
+  const values = mode === "place-detail" || mode === "map-view" ? [...textChunks, ...snapshotLabels] : textChunks;
 
-  if (mode === "package-page") {
-    return pickMatched(
-      textChunks,
-      [/^react$/i, /React is a JavaScript library/i, /^Documentation$/i, /^API$/i, /react\.dev/i],
-      6,
-      140
-    );
-  }
-
-  if (mode === "place-detail") {
-    return pickMatched(
-      [...textChunks, ...snapshotLabels],
-      [/판교옥/i, /한식/i, /장소요약/i, /깔끔한 국밥/i, /오삼덮밥/i],
-      6,
-      140
-    );
-  }
-
-  if (mode === "map-view") {
-    return pickMatched(
-      [...textChunks, ...snapshotLabels],
-      [/이스트만/i, /바\(BAR\)/i, /인테리어와 뷰가 어우러진/i, /핫플레이스/i],
-      6,
-      140
-    );
-  }
-
-  if (mode === "forum-qna") {
-    return pickMatched(
-      textChunks,
-      [/질문 제목/i, /질문 본문/i, /첫 답변/i, /둘째 답변/i, /아무도 도와줄수가없죠/i],
-      6,
-      140
-    );
-  }
-
-  if (mode === "marketing-media") {
-    return pickMatched(
-      textChunks,
-      [/Build useful AI systems/i, /Introducing GPT-5\.4/i, /^OpenAI$/i, /iPhone 17 Pro/i, /Explore the lineup/i, /Rick Astley/i, /Never Gonna Give You Up/i],
-      6,
-      140
-    );
-  }
-
-  return textChunks.slice(0, 6);
+  return pickMeaningfulText(values, {
+    maxItems: 6,
+    maxLen: 160,
+    excludePatterns: [
+      ...getFactPatterns(mode),
+      ...getStructurePatterns(mode),
+      ...getInteractionPatterns(mode, interactiveLabels),
+      ...GENERIC_SHELL_PATTERNS,
+      ...(mode === "map-view" ? MAP_PANEL_EXCLUDE_PATTERNS : [])
+    ]
+  });
 }
 
 function buildInteractions(
@@ -386,32 +429,115 @@ function buildInteractions(
   snapshotLabels: string[]
 ) {
   const combined = [...interactiveLabels, ...snapshotLabels];
+  return pickMatched(combined, getInteractionPatterns(mode, interactiveLabels), 8, 60);
+}
 
-  if (mode === "docs") {
-    return pickMatched(combined, [/Search/i, /Feedback/i], 6, 40);
+function getFactPatterns(mode: ReducedDocument["mode"]) {
+  if (mode === "docs") return DOCS_FACT_PATTERNS;
+  if (mode === "package-page") return PACKAGE_FACT_PATTERNS;
+  if (mode === "place-detail") return PLACE_FACT_PATTERNS;
+  if (mode === "map-view") return MAP_FACT_PATTERNS;
+  if (mode === "forum-qna") return FORUM_FACT_PATTERNS;
+  if (mode === "marketing-media") return MARKETING_FACT_PATTERNS;
+  return [] as RegExp[];
+}
+
+function getStructurePatterns(mode: ReducedDocument["mode"]) {
+  if (mode === "docs") return DOCS_NAV_PATTERNS;
+  if (mode === "package-page") return PACKAGE_TAB_PATTERNS;
+  if (mode === "place-detail") return PLACE_TAB_PATTERNS;
+  if (mode === "forum-qna") return FORUM_FLOW_PATTERNS;
+  if (mode === "marketing-media") return [...MARKETING_IA_PATTERNS, ...MARKETING_CTA_PATTERNS];
+  return [] as RegExp[];
+}
+
+function getInteractionPatterns(
+  mode: ReducedDocument["mode"],
+  interactiveLabels: string[]
+) {
+  if (mode === "docs") return DOCS_INTERACTION_PATTERNS;
+  if (mode === "package-page") return PACKAGE_INTERACTION_PATTERNS;
+  if (mode === "place-detail") return PLACE_INTERACTION_PATTERNS;
+  if (mode === "map-view") return MAP_INTERACTION_PATTERNS;
+  if (mode === "forum-qna") return FORUM_FLOW_PATTERNS;
+  if (mode === "marketing-media") return MARKETING_CTA_PATTERNS;
+  return interactiveLabels.length > 0 ? [/.+/] : [];
+}
+
+function extractIdentityFromTitle(title: string, mode: ReducedDocument["mode"]) {
+  const normalized = normalizeWhitespace(title);
+  const parts = normalized
+    .split(/\s+(?:\||-|:)\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  const nonShellParts = parts.filter((part) => part !== "" && !isGenericShellTitle(part, mode));
+  const values =
+    nonShellParts.length > 0
+      ? nonShellParts
+      : normalized !== "" && !isGenericShellTitle(normalized, mode)
+        ? [normalized]
+        : [];
+
+  return unique(values).slice(0, 2);
+}
+
+function isGenericShellTitle(value: string, mode: ReducedDocument["mode"]) {
+  if (mode === "map-view" || mode === "place-detail") {
+    return /^(장소|지도|네이버지도|카카오맵)$/i.test(value);
   }
 
   if (mode === "package-page") {
-    return pickMatched(combined, [/Search/i, /^Readme$/i, /^Code/i, /Copy install/i], 6, 40);
-  }
-
-  if (mode === "place-detail") {
-    return pickMatched(combined, [/로드뷰/i, /공유/i, /즐겨찾기/i, /출발/i, /도착/i, /수정제안/i], 6, 40);
-  }
-
-  if (mode === "map-view") {
-    return pickMatched(combined, [/저장/i, /패널 접기/i, /공유하기/i], 6, 40);
+    return /^(npm|pypi|github)$/i.test(value);
   }
 
   if (mode === "forum-qna") {
-    return pickMatched(combined, [/답변하기/i, /^댓글/i, /^최적$/i, /^추천순$/i], 6, 40);
+    return /^(지식iN|stackoverflow)$/i.test(value);
   }
 
-  if (mode === "marketing-media") {
-    return pickMatched(combined, [/Get started/i, /Try ChatGPT/i, /^Compare/i, /^Shop/i, /구독/i, /공유/i, /저장/i], 8, 60);
+  return false;
+}
+
+function pickIdentityCandidates(
+  values: string[],
+  options: { maxItems: number; maxLen: number; excludePatterns: RegExp[] }
+) {
+  const items: string[] = [];
+
+  for (const value of values) {
+    const line = normalizeWhitespace(value);
+    if (!line || line.length > options.maxLen) continue;
+    if (matchesAny(line, options.excludePatterns)) continue;
+    if (GENERIC_SHELL_PATTERNS.some((pattern) => pattern.test(line))) continue;
+    if (isUrlLike(line) || isMostlyNumeric(line)) continue;
+    if (line.length < 2) continue;
+    items.push(line);
   }
 
-  return unique(combined).slice(0, 8);
+  return unique(items).slice(0, options.maxItems);
+}
+
+function pickMeaningfulText(
+  values: string[],
+  options: { maxItems: number; maxLen: number; excludePatterns: RegExp[] }
+) {
+  const items: string[] = [];
+
+  for (const value of values) {
+    const line = normalizeWhitespace(value);
+    if (!line || line.length > options.maxLen) continue;
+    if (matchesAny(line, options.excludePatterns)) continue;
+    if (GENERIC_SHELL_PATTERNS.some((pattern) => pattern.test(line))) continue;
+    if (isUrlLike(line) || isMostlyNumeric(line)) continue;
+    if (!isMeaningfulContentLine(line)) continue;
+    items.push(line);
+  }
+
+  return unique(items).slice(0, options.maxItems);
+}
+
+function compactSections(sections: ReducedDocumentSection[]) {
+  return sections.filter((section) => section.items.length > 0);
 }
 
 function splitLines(text: string) {
@@ -442,7 +568,27 @@ function matchText(values: string[], patterns: RegExp[]) {
 }
 
 function pickMatched(values: string[], patterns: RegExp[], maxItems: number, maxLen: number) {
-  return unique(matchText(values, patterns).filter((value) => value.length <= maxLen)).slice(0, maxItems);
+  return unique(matchText(values, patterns).filter((value) => value.length <= maxLen)).slice(
+    0,
+    maxItems
+  );
+}
+
+function pickFactMatches(values: string[], patterns: RegExp[], maxItems: number, maxLen: number) {
+  const items: string[] = [];
+
+  for (const value of values) {
+    for (const pattern of patterns) {
+      const match = value.match(pattern);
+      if (!match?.[0]) continue;
+      const fact = normalizeWhitespace(match[0]);
+      if (fact !== "" && fact.length <= maxLen) {
+        items.push(fact);
+      }
+    }
+  }
+
+  return unique(items).slice(0, maxItems);
 }
 
 function extractQuotedLabels(lines: string[]) {
@@ -454,8 +600,36 @@ function extractQuotedLabels(lines: string[]) {
   return labels;
 }
 
+function matchesAny(value: string, patterns: RegExp[]) {
+  return patterns.some((pattern) => pattern.test(value));
+}
+
+function isUrlLike(value: string) {
+  return /^https?:\/\//i.test(value) || /^[\w.+-]+:\/\//i.test(value);
+}
+
+function isMostlyNumeric(value: string) {
+  return /^[\d\s,./:+-]+$/.test(value);
+}
+
+function isMeaningfulContentLine(value: string) {
+  const wordCount = value.split(/\s+/).length;
+  const symbolCount = (value.match(/[\p{L}\p{N}]/gu) ?? []).length;
+
+  if (symbolCount < 2) return false;
+  if (/[.!?]$/.test(value)) return true;
+  if (wordCount >= 3) return true;
+  if (value.length >= 18) return true;
+  if (/[가-힣]{4,}/.test(value)) return true;
+  return false;
+}
+
 function unique(values: string[]) {
   return [...new Set(values.filter(Boolean))];
+}
+
+function normalizeWhitespace(value: string) {
+  return value.replace(/\s+/g, " ").trim();
 }
 
 function escapeHtml(value: string) {
