@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "bun test"
+    "test": "bun test",
+    "goldens:live": "bun scripts/capture-agent-browser-like-live-goldens.ts"
   },
   "dependencies": {
     "agent-browser": "0.9.2",

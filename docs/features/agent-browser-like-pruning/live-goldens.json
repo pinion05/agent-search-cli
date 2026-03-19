@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "nextjs-docs-live",
+    "url": "https://nextjs.org/docs",
+    "expectedMode": "docs",
+    "expectedSignals": ["Getting Started", "API Reference", "Version 16", "Search documentation"]
+  },
+  {
+    "slug": "npm-react-live",
+    "url": "https://www.npmjs.com/package/react",
+    "expectedMode": "package-page",
+    "expectedSignals": ["npm i react", "Readme", "React is a JavaScript library"]
+  },
+  {
+    "slug": "python-insider-live",
+    "url": "https://blog.python.org/",
+    "expectedMode": "generic",
+    "expectedSignals": ["Python Insider", "News & updates from the Python core team", "RSS Feed"]
+  },
+  {
+    "slug": "youtube-zoo-live",
+    "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+    "expectedMode": "marketing-media",
+    "expectedSignals": ["Me at the zoo", "조회수", "YouTube"]
+  }
+]
