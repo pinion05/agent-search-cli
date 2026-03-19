@@ -34,6 +34,8 @@ describe("README", () => {
       expect(README).toContain(snippet);
     }
 
+    expect(README).not.toContain("- `toon`");
+
     for (const removedSection of [
       "## Goal",
       "## Planned Output",

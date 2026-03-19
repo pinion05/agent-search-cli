@@ -34,6 +34,7 @@ describe("runBraiveCli", () => {
     expect(result.output).toContain('"title": "Example Post"');
     expect(result.output).toContain('"mode": "generic"');
     expect(result.output).toContain('"search": {');
+    expect(result.output).not.toContain('"toon":');
   });
 
   test("filters invalid Brave URLs and fails when no usable query results remain", async () => {
@@ -77,7 +78,7 @@ describe("runBraiveCli", () => {
     expect(result.exitCode).toBe(0);
     expect(result.output).toContain('"kind": "url"');
     expect(result.output).toContain('"mode": "docs"');
-    expect(result.output).toContain('"toon": "docs toon"');
+    expect(result.output).not.toContain('"toon":');
   });
 
   test("passes debugDir through to the processing dependency", async () => {

@@ -21,6 +21,8 @@ export type ProcessedDocument = {
   reducedHtml?: string;
 };
 
+export type BraiveOutputDocument = Omit<ProcessedDocument, "toon">;
+
 type BraiveDependencies = {
   now?: () => Date;
   search: (query: string, options: { count: number }) => Promise<BraveSearchResult[]>;
@@ -48,7 +50,7 @@ type BraivePacket = {
   search?: {
     results: Array<BraveSearchResult & { rank: number }>;
   };
-  documents: Array<ProcessedDocument & { rank: number }>;
+  documents: Array<BraiveOutputDocument & { rank: number }>;
   failures: Array<{ url: string; reason: string }>;
 };
 
@@ -99,7 +101,7 @@ export async function runBraiveCli(argv: string[], dependencies: BraiveDependenc
     ...(searchResults
       ? { search: { results: searchResults.map((result, index) => ({ ...result, rank: index + 1 })) } }
       : {}),
-    documents,
+    documents: documents.map(({ toon: _toon, ...document }) => document),
     failures
   };
 

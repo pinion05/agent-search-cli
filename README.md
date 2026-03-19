@@ -6,7 +6,7 @@
 
 - Run `query` when you want Brave discovery plus page processing in one step.
 - Run `url` or `urls` when you already know which pages to reduce.
-- Keep structured outputs (`toon`, `reducedHtml`) instead of raw browser noise.
+- Keep reduced HTML plus debug artifacts instead of raw browser noise.
 - Save inspectable debug artifacts per URL with `--debug-dir`.
 
 ## Install
@@ -77,7 +77,6 @@ Each document includes:
 - `title`
 - `fetchedAt`
 - `mode`
-- `toon`
 - `reducedHtml`
 
 Use `--out` to save the final JSON packet to disk.

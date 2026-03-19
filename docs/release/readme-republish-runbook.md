@@ -21,7 +21,7 @@ The rewritten README should keep only the sections below:
    - `braive urls <url...> [--out FILE] [--debug-dir DIR]`
 5. **Output and debug artifacts**
    - final stdout / `--out` payload is a JSON packet
-   - processed documents include `url`, `finalUrl`, `title`, `fetchedAt`, `mode`, `toon`, and `reducedHtml`
+   - processed documents include `url`, `finalUrl`, `title`, `fetchedAt`, `mode`, and `reducedHtml`
    - `--debug-dir` writes per-URL artifacts:
      - `reduced.html`
      - `toon.txt`
