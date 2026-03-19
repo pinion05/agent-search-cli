@@ -245,6 +245,46 @@ describe("buildReducedDocumentFromOracle", () => {
     expect(reduced.interactions).toContain("저장");
   });
 
+  test("generalizes place-detail extraction to unseen place names", () => {
+    const reduced = buildReducedDocumentFromOracle(
+      {
+        url: "https://place.map.kakao.com/42",
+        finalUrl: "https://place.map.kakao.com/42",
+        fetchedAt: "2026-03-19T00:00:00Z",
+        title: "Seaside Kitchen | 카카오맵",
+        bodyHtml: "<main>raw</main>"
+      },
+      {
+        snapshotTree: [
+          '- link "홈" [ref=e1]',
+          '- link "메뉴" [ref=e2]',
+          '- link "후기" [ref=e3]',
+          '- button "공유" [ref=e4]'
+        ].join("\n"),
+        interactiveTree: [
+          '- button "공유" [ref=e5]',
+          '- button "출발" [ref=e6]'
+        ].join("\n"),
+        innerText: [
+          "Seaside Kitchen",
+          "한식",
+          "국물이 진한 점심 식당",
+          "평점 4.6",
+          "영업시간 11:00-22:00",
+          "주소 바다로 42"
+        ].join("\n")
+      }
+    );
+
+    expect(reduced.mode).toBe("place-detail");
+    expect(reduced.identity).toContain("Seaside Kitchen");
+    expect(reduced.facts).toContain("평점 4.6");
+    expect(reduced.facts).toContain("영업시간 11:00-22:00");
+    expect(reduced.structure.some((section) => section.items.includes("메뉴"))).toBe(true);
+    expect(reduced.content).toContain("국물이 진한 점심 식당");
+    expect(reduced.interactions).toContain("공유");
+  });
+
   test("generalizes forum extraction to english qna fixtures", () => {
     const reduced = buildReducedDocumentFromOracle(
       {
@@ -313,6 +353,42 @@ describe("buildReducedDocumentFromOracle", () => {
     expect(reduced.structure.some((section) => section.items.includes("Pricing"))).toBe(true);
     expect(reduced.content).toContain("Build faster internal tools.");
     expect(reduced.interactions).toContain("Get started");
+  });
+
+  test("keeps narrative content in generic fallback mode", () => {
+    const reduced = buildReducedDocumentFromOracle(
+      {
+        url: "https://example.com/blog/post",
+        finalUrl: "https://example.com/blog/post",
+        fetchedAt: "2026-03-19T00:00:00Z",
+        title: "Example Blog",
+        bodyHtml: "<main>raw</main>"
+      },
+      {
+        snapshotTree: [
+          '- link "Home" [ref=e1]',
+          '- link "Stories" [ref=e2]',
+          '- link "Docs" [ref=e3]',
+          '- button "Read more" [ref=e4]'
+        ].join("\n"),
+        interactiveTree: [
+          '- button "Subscribe" [ref=e5]',
+          '- button "Read more" [ref=e6]'
+        ].join("\n"),
+        innerText: [
+          "Example Blog",
+          "Shipping dependable web apps.",
+          "We share build notes every week."
+        ].join("\n")
+      }
+    );
+
+    expect(reduced.mode).toBe("generic");
+    expect(reduced.content).toContain("Shipping dependable web apps.");
+    expect(reduced.content).toContain("We share build notes every week.");
+    expect(reduced.interactions).toContain("Subscribe");
+    expect(reduced.interactions).not.toContain("Home");
+    expect(reduced.interactions).not.toContain("Stories");
   });
 
   test("collects agent-browser oracle output from a rendered page", async () => {

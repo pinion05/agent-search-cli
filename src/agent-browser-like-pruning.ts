@@ -45,7 +45,7 @@ const PLACE_FACT_PATTERNS = [
   /후기\s*\d+개?/i,
   /블로그\s*\d+개?/i,
   /영업\s*(?:전|마감)[^\n]{0,30}/i,
-  /영업시간\s*[:0-9]/i,
+  /영업시간\s*[:0-9][^\n]{0,20}/i,
   /^주소.*$/i,
   /^전화.*$/i,
   /\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d{2}/,
@@ -59,7 +59,7 @@ const MAP_FACT_PATTERNS = [
   /평균(?:\s*가격)?\s*[0-9,]+원/i,
   /별점\s*[0-9.]+/i,
   /예약 가능/i,
-  /영업시간\s*[:0-9]/i,
+  /영업시간\s*[:0-9][^\n]{0,20}/i,
   /주차/i
 ];
 const MAP_PANEL_EXCLUDE_PATTERNS = [
@@ -428,6 +428,10 @@ function buildInteractions(
   interactiveLabels: string[],
   snapshotLabels: string[]
 ) {
+  if (mode === "generic") {
+    return unique(interactiveLabels).slice(0, 8);
+  }
+
   const combined = [...interactiveLabels, ...snapshotLabels];
   return pickMatched(combined, getInteractionPatterns(mode, interactiveLabels), 8, 60);
 }
@@ -461,7 +465,8 @@ function getInteractionPatterns(
   if (mode === "map-view") return MAP_INTERACTION_PATTERNS;
   if (mode === "forum-qna") return FORUM_FLOW_PATTERNS;
   if (mode === "marketing-media") return MARKETING_CTA_PATTERNS;
-  return interactiveLabels.length > 0 ? [/.+/] : [];
+  if (mode === "generic") return buildExactPatterns(interactiveLabels);
+  return [] as RegExp[];
 }
 
 function extractIdentityFromTitle(title: string, mode: ReducedDocument["mode"]) {
@@ -492,7 +497,7 @@ function isGenericShellTitle(value: string, mode: ReducedDocument["mode"]) {
   }
 
   if (mode === "forum-qna") {
-    return /^(지식iN|stackoverflow)$/i.test(value);
+    return /^(지식iN|stack ?overflow)$/i.test(value);
   }
 
   return false;
@@ -602,6 +607,14 @@ function extractQuotedLabels(lines: string[]) {
 
 function matchesAny(value: string, patterns: RegExp[]) {
   return patterns.some((pattern) => pattern.test(value));
+}
+
+function buildExactPatterns(values: string[]) {
+  return unique(values).map((value) => new RegExp(`^${escapeRegExp(value)}$`, "i"));
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function isUrlLike(value: string) {

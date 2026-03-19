@@ -7,7 +7,10 @@ Generated sample pairs live under `docs/features/agent-browser-like-pruning/samp
 - `docs-generic-raw.html` / `docs-generic-reduced.html`
 - `package-generic-raw.html` / `package-generic-reduced.html`
 - `map-generic-raw.html` / `map-generic-reduced.html`
+- `place-detail-generic-raw.html` / `place-detail-generic-reduced.html`
+- `forum-generic-raw.html` / `forum-generic-reduced.html`
 - `marketing-generic-raw.html` / `marketing-generic-reduced.html`
+- `generic-blog-raw.html` / `generic-blog-reduced.html`
 
 The manifest at `docs/features/agent-browser-like-pruning/samples/manifest.json` lists the preserved signals the reviewer should verify in BrowserOS.
 

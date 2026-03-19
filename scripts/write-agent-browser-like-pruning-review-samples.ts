@@ -134,6 +134,79 @@ const samples: Sample[] = [
     preservedSignals: ["Moonlight Cafe", "리뷰 42", "평균 18,000원"]
   },
   {
+    slug: "place-detail-generic",
+    rawHtml: [
+      "<!doctype html>",
+      "<html><head><title>Seaside Kitchen | 카카오맵</title></head><body>",
+      "<header><nav><a>홈</a><a>메뉴</a><a>후기</a><button>공유</button></nav></header>",
+      "<main><section><h1>Seaside Kitchen</h1><p>한식</p><p>국물이 진한 점심 식당</p><p>평점 4.6</p><p>영업시간 11:00-22:00</p><p>주소 바다로 42</p></section></main>",
+      "</body></html>"
+    ].join(""),
+    document: {
+      url: "https://place.map.kakao.com/42",
+      finalUrl: "https://place.map.kakao.com/42",
+      fetchedAt: "2026-03-19T00:00:00Z",
+      title: "Seaside Kitchen | 카카오맵",
+      bodyHtml: [
+        "<header><nav><a>홈</a><a>메뉴</a><a>후기</a><button>공유</button></nav></header>",
+        "<main><section><h1>Seaside Kitchen</h1><p>한식</p><p>국물이 진한 점심 식당</p><p>평점 4.6</p><p>영업시간 11:00-22:00</p><p>주소 바다로 42</p></section></main>"
+      ].join("")
+    },
+    oracle: {
+      snapshotTree: [
+        '- link "홈" [ref=e1]',
+        '- link "메뉴" [ref=e2]',
+        '- link "후기" [ref=e3]',
+        '- button "공유" [ref=e4]'
+      ].join("\n"),
+      interactiveTree: ['- button "공유" [ref=e5]', '- button "출발" [ref=e6]'].join("\n"),
+      innerText: [
+        "Seaside Kitchen",
+        "한식",
+        "국물이 진한 점심 식당",
+        "평점 4.6",
+        "영업시간 11:00-22:00",
+        "주소 바다로 42"
+      ].join("\n")
+    },
+    preservedSignals: ["Seaside Kitchen", "평점 4.6", "메뉴", "국물이 진한 점심 식당"]
+  },
+  {
+    slug: "forum-generic",
+    rawHtml: [
+      "<!doctype html>",
+      "<html><head><title>How do I parse CSV safely? - Stack Overflow</title></head><body>",
+      "<header><nav><a>Accepted</a><a>Answers</a><a>Comments</a></nav></header>",
+      "<main><article><h1>How do I parse CSV safely?</h1><p>I need to parse a quoted CSV file.</p><p>Use a real CSV parser instead of split.</p><button>Answer</button></article></main>",
+      "</body></html>"
+    ].join(""),
+    document: {
+      url: "https://stackoverflow.com/questions/1/example",
+      finalUrl: "https://stackoverflow.com/questions/1/example",
+      fetchedAt: "2026-03-19T00:00:00Z",
+      title: "How do I parse CSV safely? - Stack Overflow",
+      bodyHtml: [
+        "<header><nav><a>Accepted</a><a>Answers</a><a>Comments</a></nav></header>",
+        "<main><article><h1>How do I parse CSV safely?</h1><p>I need to parse a quoted CSV file.</p><p>Use a real CSV parser instead of split.</p><button>Answer</button></article></main>"
+      ].join("")
+    },
+    oracle: {
+      snapshotTree: [
+        '- link "Accepted" [ref=e1]',
+        '- link "Answers" [ref=e2]',
+        '- link "Comments" [ref=e3]'
+      ].join("\n"),
+      interactiveTree: ['- button "Answer" [ref=e4]', '- button "Comments" [ref=e5]'].join("\n"),
+      innerText: [
+        "How do I parse CSV safely?",
+        "I need to parse a quoted CSV file.",
+        "Use a real CSV parser instead of split.",
+        "This avoids common edge cases."
+      ].join("\n")
+    },
+    preservedSignals: ["How do I parse CSV safely?", "I need to parse a quoted CSV file.", "Answer"]
+  },
+  {
     slug: "marketing-generic",
     rawHtml: [
       "<!doctype html>",
@@ -169,6 +242,41 @@ const samples: Sample[] = [
       ].join("\n")
     },
     preservedSignals: ["Pricing", "Build faster internal tools.", "Get started"]
+  },
+  {
+    slug: "generic-blog",
+    rawHtml: [
+      "<!doctype html>",
+      "<html><head><title>Example Blog</title></head><body>",
+      "<header><nav><a>Home</a><a>Stories</a><a>Docs</a><button>Subscribe</button></nav></header>",
+      "<main><article><h1>Example Blog</h1><p>Shipping dependable web apps.</p><p>We share build notes every week.</p><button>Read more</button></article></main>",
+      "</body></html>"
+    ].join(""),
+    document: {
+      url: "https://example.com/blog/post",
+      finalUrl: "https://example.com/blog/post",
+      fetchedAt: "2026-03-19T00:00:00Z",
+      title: "Example Blog",
+      bodyHtml: [
+        "<header><nav><a>Home</a><a>Stories</a><a>Docs</a><button>Subscribe</button></nav></header>",
+        "<main><article><h1>Example Blog</h1><p>Shipping dependable web apps.</p><p>We share build notes every week.</p><button>Read more</button></article></main>"
+      ].join("")
+    },
+    oracle: {
+      snapshotTree: [
+        '- link "Home" [ref=e1]',
+        '- link "Stories" [ref=e2]',
+        '- link "Docs" [ref=e3]',
+        '- button "Read more" [ref=e4]'
+      ].join("\n"),
+      interactiveTree: ['- button "Subscribe" [ref=e5]', '- button "Read more" [ref=e6]'].join("\n"),
+      innerText: [
+        "Example Blog",
+        "Shipping dependable web apps.",
+        "We share build notes every week."
+      ].join("\n")
+    },
+    preservedSignals: ["Shipping dependable web apps.", "We share build notes every week.", "Subscribe"]
   }
 ];
 

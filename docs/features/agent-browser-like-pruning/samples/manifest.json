@@ -147,6 +147,98 @@
     }
   },
   {
+    "slug": "place-detail-generic",
+    "rawPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/place-detail-generic-raw.html",
+    "reducedPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/place-detail-generic-reduced.html",
+    "preservedSignals": [
+      "Seaside Kitchen",
+      "평점 4.6",
+      "메뉴",
+      "국물이 진한 점심 식당"
+    ],
+    "reduced": {
+      "url": "https://place.map.kakao.com/42",
+      "finalUrl": "https://place.map.kakao.com/42",
+      "fetchedAt": "2026-03-19T00:00:00Z",
+      "title": "Seaside Kitchen | 카카오맵",
+      "bodyHtml": "<header><nav><a>홈</a><a>메뉴</a><a>후기</a><button>공유</button></nav></header><main><section><h1>Seaside Kitchen</h1><p>한식</p><p>국물이 진한 점심 식당</p><p>평점 4.6</p><p>영업시간 11:00-22:00</p><p>주소 바다로 42</p></section></main>",
+      "mode": "place-detail",
+      "identity": [
+        "Seaside Kitchen",
+        "한식",
+        "국물이 진한 점심 식당"
+      ],
+      "facts": [
+        "평점 4.6",
+        "영업시간 11:00-22:00",
+        "11:00-22:00",
+        "주소 바다로 42"
+      ],
+      "structure": [
+        {
+          "heading": "tabs",
+          "items": [
+            "홈",
+            "메뉴",
+            "후기"
+          ]
+        }
+      ],
+      "content": [
+        "국물이 진한 점심 식당"
+      ],
+      "interactions": [
+        "공유",
+        "출발"
+      ]
+    }
+  },
+  {
+    "slug": "forum-generic",
+    "rawPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/forum-generic-raw.html",
+    "reducedPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/forum-generic-reduced.html",
+    "preservedSignals": [
+      "How do I parse CSV safely?",
+      "I need to parse a quoted CSV file.",
+      "Answer"
+    ],
+    "reduced": {
+      "url": "https://stackoverflow.com/questions/1/example",
+      "finalUrl": "https://stackoverflow.com/questions/1/example",
+      "fetchedAt": "2026-03-19T00:00:00Z",
+      "title": "How do I parse CSV safely? - Stack Overflow",
+      "bodyHtml": "<header><nav><a>Accepted</a><a>Answers</a><a>Comments</a></nav></header><main><article><h1>How do I parse CSV safely?</h1><p>I need to parse a quoted CSV file.</p><p>Use a real CSV parser instead of split.</p><button>Answer</button></article></main>",
+      "mode": "forum-qna",
+      "identity": [
+        "How do I parse CSV safely?",
+        "I need to parse a quoted CSV file."
+      ],
+      "facts": [],
+      "structure": [
+        {
+          "heading": "sort-and-flow",
+          "items": [
+            "Accepted",
+            "Answers",
+            "Comments"
+          ]
+        }
+      ],
+      "content": [
+        "How do I parse CSV safely?",
+        "I need to parse a quoted CSV file.",
+        "Use a real CSV parser instead of split.",
+        "This avoids common edge cases."
+      ],
+      "interactions": [
+        "Answer",
+        "Comments",
+        "Accepted",
+        "Answers"
+      ]
+    }
+  },
+  {
     "slug": "marketing-generic",
     "rawPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/marketing-generic-raw.html",
     "reducedPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/marketing-generic-reduced.html",
@@ -196,6 +288,38 @@
         "Get started",
         "Learn more",
         "Compare plans"
+      ]
+    }
+  },
+  {
+    "slug": "generic-blog",
+    "rawPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/generic-blog-raw.html",
+    "reducedPath": "/Users/pinion/dev/agent-search-cli/docs/features/agent-browser-like-pruning/samples/generic-blog-reduced.html",
+    "preservedSignals": [
+      "Shipping dependable web apps.",
+      "We share build notes every week.",
+      "Subscribe"
+    ],
+    "reduced": {
+      "url": "https://example.com/blog/post",
+      "finalUrl": "https://example.com/blog/post",
+      "fetchedAt": "2026-03-19T00:00:00Z",
+      "title": "Example Blog",
+      "bodyHtml": "<header><nav><a>Home</a><a>Stories</a><a>Docs</a><button>Subscribe</button></nav></header><main><article><h1>Example Blog</h1><p>Shipping dependable web apps.</p><p>We share build notes every week.</p><button>Read more</button></article></main>",
+      "mode": "generic",
+      "identity": [
+        "Example Blog",
+        "Shipping dependable web apps."
+      ],
+      "facts": [],
+      "structure": [],
+      "content": [
+        "Shipping dependable web apps.",
+        "We share build notes every week."
+      ],
+      "interactions": [
+        "Subscribe",
+        "Read more"
       ]
     }
   }
