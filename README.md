@@ -1,50 +1,58 @@
 # brAIve
 
-Brave Search 결과를 가져와서 URL을 크롤링하고, 의미 단위로 압축한 뒤 TOON까지 만들어 주는 CLI입니다.
+`brAIve` is an agent-focused retrieval CLI built on top of Brave Search. It turns search results and known URLs into compact, source-linked JSON packets that are easier for agents to inspect, rank, and reuse.
 
-## 기대효과
+## Why use brAIve?
 
-- 검색 -> URL 선택 -> 크롤링 -> 의미 압축을 한 번에 처리
-- 원문 HTML보다 훨씬 짧은 형태로 문서를 확인 가능
-- `reducedHtml`과 `toon`을 같이 남겨서 사람이 보기에도, 에이전트에 넘기기에도 편함
-- `--debug-dir`로 각 URL별 산출물을 바로 확인 가능
+- Run `query` when you want Brave discovery plus page processing in one step.
+- Run `url` or `urls` when you already know which pages to reduce.
+- Keep structured outputs (`toon`, `reducedHtml`) instead of raw browser noise.
+- Save inspectable debug artifacts per URL with `--debug-dir`.
 
-## 설치
+## Install
+
+Published package:
 
 ```bash
 npm install -g @npmc_5/braive
 ```
 
-## 환경 변수
+Requirements:
 
-`query` 모드는 Brave Search API 키가 필요합니다.
+- Node.js 20+
+- Bun if you want to run the repo-local `bun run braive -- ...` script
+
+## Environment
+
+`query` mode requires a Brave API key:
 
 ```bash
 export BRAVE_API_KEY=...
 ```
 
-## 사용법
+`url` and `urls` modes do not require `BRAVE_API_KEY`.
 
-### 1. 검색부터 한 번에
+## Commands
 
-```bash
-braive query "nextjs app router docs"
-braive query "openai codex pricing" --count 5
-```
-
-### 2. URL 하나 처리
+Installed CLI:
 
 ```bash
-braive url https://example.com
+braive query "openai codex pricing"
+braive query "openai codex pricing" --count 3 --out result.json
+braive url https://example.com --debug-dir ./artifacts
+braive urls https://example.com https://example.org --out packet.json
 ```
 
-### 3. URL 여러 개 처리
+Repo-local CLI:
 
 ```bash
-braive urls https://example.com https://example.org
+bun install
+bun run braive -- query "openai codex pricing"
+bun run braive -- url https://example.com
+bun run braive -- urls https://example.com https://example.org
 ```
 
-## 자주 쓰는 옵션
+Supported options:
 
 ```bash
 --count <n>      query 모드에서 Brave 검색 결과 개수 지정
@@ -52,44 +60,33 @@ braive urls https://example.com https://example.org
 --debug-dir <d>  URL별 reduced HTML / TOON / reduced packet 산출물 저장
 ```
 
-## 예시
+## Output and debug artifacts
 
-```bash
-braive query "nextjs app router docs" \
-  --count 3 \
-  --out .omx/artifacts/braive-live-query/output.json \
-  --debug-dir .omx/artifacts/braive-live-query/debug
-```
-
-## 출력 형태
-
-기본 출력은 JSON packet입니다.
-
-주요 필드:
+Every successful run emits a JSON packet with:
 
 - `generated_at`
 - `input`
-- `search.results` (`query` 모드일 때만)
-- `documents[]`
-  - `url`
-  - `finalUrl`
-  - `title`
-  - `fetchedAt`
-  - `mode`
-  - `toon`
-  - `reducedHtml`
-- `failures[]`
+- `search.results` for `query` mode
+- `documents`
+- `failures`
 
-## debug-dir 안에 생기는 것
+Each document includes:
 
-URL 하나당 디렉터리 하나가 생기고, 아래 파일이 들어갑니다.
+- `url`
+- `finalUrl`
+- `title`
+- `fetchedAt`
+- `mode`
+- `toon`
+- `reducedHtml`
 
-- `packet.json`
-- `reduced.html`
-- `toon.txt`
+Use `--out` to save the final JSON packet to disk.
 
-## 언제 쓰면 좋나
+Use `--debug-dir` to write per-URL artifacts:
 
-- 기술 문서 몇 개를 빠르게 압축해서 보고 싶을 때
-- 검색 결과 상위 문서를 바로 에이전트 입력용으로 줄이고 싶을 때
-- 크롤링 결과와 압축 결과를 같이 저장해 디버깅하고 싶을 때
+```text
+<debug-dir>/<slug>/
+  reduced.html
+  toon.txt
+  packet.json
+```
