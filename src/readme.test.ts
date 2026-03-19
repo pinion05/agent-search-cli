@@ -10,7 +10,7 @@ describe("README", () => {
       "## Install",
       "## Environment",
       "## Commands",
-      "## Output and debug artifacts"
+      "## Output and debug artifacts",
     ]) {
       expect(README).toContain(section);
     }
@@ -29,7 +29,7 @@ describe("README", () => {
       "failures",
       "reduced.html",
       "toon.txt",
-      "packet.json"
+      "packet.json",
     ]) {
       expect(README).toContain(snippet);
     }
@@ -39,7 +39,7 @@ describe("README", () => {
       "## Planned Output",
       "## Status",
       "## Current MVP",
-      "Not implemented yet:"
+      "Not implemented yet:",
     ]) {
       expect(README).not.toContain(removedSection);
     }
