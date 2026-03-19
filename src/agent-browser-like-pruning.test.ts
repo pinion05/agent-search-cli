@@ -1,6 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { buildReducedDocumentFromOracle, renderReducedDocumentHtml } from "./agent-browser-like-pruning";
+import {
+  buildReducedDocumentFromOracle,
+  collectAgentBrowserOracle,
+  renderReducedDocumentHtml
+} from "./agent-browser-like-pruning";
 
 describe("buildReducedDocumentFromOracle", () => {
   test("keeps docs structure and version context from oracle signals", () => {
@@ -123,6 +127,28 @@ describe("buildReducedDocumentFromOracle", () => {
       true
     );
     expect(reduced.interactions).toContain("저장");
+  });
+
+  test("collects agent-browser oracle output from a rendered page", async () => {
+    const oracle = await collectAgentBrowserOracle({
+      url: "https://example.com",
+      finalUrl: "https://example.com",
+      fetchedAt: "2026-03-19T00:00:00Z",
+      title: "Example",
+      bodyHtml: [
+        "<main>",
+        "<h1>Example heading</h1>",
+        '<a href="/docs">Docs</a>',
+        "<button>Click me</button>",
+        "<p>Hello world.</p>",
+        "</main>"
+      ].join("")
+    });
+
+    expect(oracle.snapshotTree).toContain('heading "Example heading"');
+    expect(oracle.snapshotTree).toContain('link "Docs"');
+    expect(oracle.interactiveTree).toContain('button "Click me"');
+    expect(oracle.innerText).toContain("Hello world.");
   });
 
   test("renders reduced document as structured semantic html", () => {
