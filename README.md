@@ -1,66 +1,58 @@
-<img width="693" height="161" alt="image" src="https://github.com/user-attachments/assets/7c3d487a-0e79-45ce-ae95-f3c4ae84bec7" />
-
 # brAIve
 
-`brAIve` is an agent-focused retrieval CLI built on top of Brave Search.
+`brAIve` is an agent-focused retrieval CLI built on top of Brave Search. It turns search results and known URLs into compact, source-linked JSON packets that are easier for agents to inspect, rank, and reuse.
 
-The repository name is `agent-search-cli`, while the product name is `brAIve`.
+## Why use brAIve?
 
-## Goal
+- Run `query` when you want Brave discovery plus page processing in one step.
+- Run `url` or `urls` when you already know which pages to reduce.
+- Keep structured outputs (`toon`, `reducedHtml`) instead of raw browser noise.
+- Save inspectable debug artifacts per URL with `--debug-dir`.
 
-Turn noisy web search results into compact, source-linked research packs for agents.
+## Install
 
-## Planned Output
-
-- compressed summary
-- key facts
-- source URLs
-- follow-up links
-- gap metadata
-
-## Status
-
-Active MVP implementation.
-
-## Current MVP
-
-The repository now includes an integrated, test-covered CLI path:
-
-Current scope:
-
-- `braive query <query>` using Brave Search
-- `braive url <url>` / `braive urls <url...>`
-- `url -> RenderedDocument` using `Crawlee + Playwright`
-- `RenderedDocument -> agent-browser-like reduced document`
-- reduced HTML rendering
-- reduced HTML -> TOON serialization
-- optional debug artifact output per processed URL
-
-Not implemented yet:
-
-- iframe traversal
-- Brave result caching
-- multi-page research-pack synthesis across URLs
-- LLM compression / summary layer
-- richer TOON packet contract beyond per-page semantic reduction
-
-## CLI
-
-### Commands
+Published package:
 
 ```bash
 npm install -g @npmc_5/braive
+```
 
+Requirements:
+
+- Node.js 20+
+- Bun if you want to run the repo-local `bun run braive -- ...` script
+
+## Environment
+
+`query` mode requires a Brave API key:
+
+```bash
+export BRAVE_API_KEY=...
+```
+
+`url` and `urls` modes do not require `BRAVE_API_KEY`.
+
+## Commands
+
+Installed CLI:
+
+```bash
+braive query "openai codex pricing"
+braive query "openai codex pricing" --count 3 --out result.json
+braive url https://example.com --debug-dir ./artifacts
+braive urls https://example.com https://example.org --out packet.json
+```
+
+Repo-local CLI:
+
+```bash
+bun install
 bun run braive -- query "openai codex pricing"
 bun run braive -- url https://example.com
 bun run braive -- urls https://example.com https://example.org
-
-braive query "openai codex pricing"
-braive url https://example.com
-braive urls https://example.com https://example.org
 ```
 
-### Options
+Supported options:
 
 ```bash
 --count <n>      Brave query result count for query mode
@@ -68,26 +60,33 @@ braive urls https://example.com https://example.org
 --debug-dir <d>  write reduced HTML / TOON / reduced packet artifacts per URL
 ```
 
-### Environment
+## Output and debug artifacts
 
-`query` mode requires:
+Every successful run emits a JSON packet with:
 
-```bash
-BRAVE_API_KEY=...
+- `generated_at`
+- `input`
+- `search.results` for `query` mode
+- `documents`
+- `failures`
+
+Each document includes:
+
+- `url`
+- `finalUrl`
+- `title`
+- `fetchedAt`
+- `mode`
+- `toon`
+- `reducedHtml`
+
+Use `--out` to save the final JSON packet to disk.
+
+Use `--debug-dir` to write per-URL artifacts:
+
+```text
+<debug-dir>/<slug>/
+  reduced.html
+  toon.txt
+  packet.json
 ```
-
-### Output
-
-The CLI emits a compact JSON packet containing:
-
-- input metadata
-- normalized Brave search results for `query` mode
-- processed documents with:
-  - `url`
-  - `finalUrl`
-  - `title`
-  - `fetchedAt`
-  - `mode`
-  - `toon`
-  - `reducedHtml`
-- per-URL failures
