@@ -9,7 +9,7 @@
 - [x] Build config exists and emits publishable JS to `dist/`
 - [x] `npm pack --dry-run` passes
 - [x] `npm publish --dry-run --access public` passes
-- [ ] npm authentication available (`npm whoami` currently fails with 401)
+- [ ] npm authentication / publish permission available (`npm whoami` fails with 401; actual `npm publish --access public` failed with registry `E404`)
 - [ ] final publish completed successfully
 
 ## P1 — Strongly recommended before public release
