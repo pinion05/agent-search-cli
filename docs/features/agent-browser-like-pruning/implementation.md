@@ -1,6 +1,6 @@
 # Agent-Browser-Like Pruning
 
-> Status note (2026-03-19): see `review.md` for the current approval-readiness review and blockers.
+> Status note (2026-03-19): see `review.md` for the earlier blocker review and `acceptance.md` for the current accepted review.
 
 ## Goal
 

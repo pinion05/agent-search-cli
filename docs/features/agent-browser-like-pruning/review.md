@@ -1,5 +1,7 @@
 # Agent-Browser-Like Pruning Review — 2026-03-19
 
+> Superseded by `acceptance.md` after the generic fallback fix and expanded BrowserOS review coverage.
+
 ## Verdict
 
 **REQUEST CHANGES / do not mark ACCEPT yet.**
