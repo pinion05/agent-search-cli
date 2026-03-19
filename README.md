@@ -49,9 +49,15 @@ Not implemented yet:
 ### Commands
 
 ```bash
+npm install -g @npmc_5/braive
+
 bun run braive -- query "openai codex pricing"
 bun run braive -- url https://example.com
 bun run braive -- urls https://example.com https://example.org
+
+braive query "openai codex pricing"
+braive url https://example.com
+braive urls https://example.com https://example.org
 ```
 
 ### Options
