@@ -1,5 +1,7 @@
 # Agent-Browser-Like Pruning
 
+> Status note (2026-03-19): see `review.md` for the current approval-readiness review and blockers.
+
 ## Goal
 
 Build a pruning system that preserves the information structure most aligned with `agent-browser`, rather than preserving raw HTML.
