@@ -8,7 +8,7 @@ import type {
   ReducedDocumentLink,
   ReducedDocumentSection,
   RenderedDocument
-} from "./types";
+} from "./types.js";
 
 const DOCS_FACT_PATTERNS = [/Version\s*\d+(?:\.\d+)*/i, /\bApp Router\b/i, /\bPages Router\b/i];
 const DOCS_NAV_PATTERNS = [

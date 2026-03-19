@@ -1,6 +1,6 @@
 import { parseHTML } from "linkedom";
 
-import type { PrunedDocument, PruningMode, RenderedDocument } from "./types";
+import type { PrunedDocument, PruningMode, RenderedDocument } from "./types.js";
 
 const EARLY_DISCARD_SELECTORS = [
   "script",

@@ -1,6 +1,6 @@
 import { launchPlaywright } from "crawlee";
 
-import type { RenderedDocument } from "./types";
+import type { RenderedDocument } from "./types.js";
 
 type CrawlUrlToRenderedDocumentOptions = {
   headless?: boolean;

@@ -1,5 +1,4 @@
 import { parseHTML } from "linkedom";
-
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
 

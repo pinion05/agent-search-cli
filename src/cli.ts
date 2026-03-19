@@ -1,6 +1,6 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
-import { createDefaultBraiveDependencies, runBraiveCli } from "./braive-runner";
+import { createDefaultBraiveDependencies, runBraiveCli } from "./braive-runner.js";
 
 try {
   const result = await runBraiveCli(process.argv.slice(2), createDefaultBraiveDependencies());

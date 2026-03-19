@@ -1,11 +1,15 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
 
-import { buildReducedDocumentFromOracle, collectAgentBrowserOracle, renderReducedDocumentHtml } from "./agent-browser-like-pruning";
-import { createBraveClient, type BraveSearchResult } from "./brave-search";
-import { crawlUrlToRenderedDocument } from "./crawl-url-to-rendered-document";
-import { htmlToToon } from "./html-to-toon";
-import type { PruningMode } from "./types";
+import {
+  buildReducedDocumentFromOracle,
+  collectAgentBrowserOracle,
+  renderReducedDocumentHtml
+} from "./agent-browser-like-pruning.js";
+import { createBraveClient, type BraveSearchResult } from "./brave-search.js";
+import { crawlUrlToRenderedDocument } from "./crawl-url-to-rendered-document.js";
+import { htmlToToon } from "./html-to-toon.js";
+import type { PruningMode } from "./types.js";
 
 export type ProcessedDocument = {
   url: string;
