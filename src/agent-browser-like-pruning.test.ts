@@ -14,7 +14,10 @@ describe("buildReducedDocumentFromOracle", () => {
         finalUrl: "https://nextjs.org/docs",
         fetchedAt: "2026-03-19T00:00:00Z",
         title: "Next.js Docs",
-        bodyHtml: "<main>raw</main>"
+        bodyHtml: [
+          '<nav><a href="/docs/getting-started">Getting Started</a><a href="/docs/guides">Guides</a><a href="/docs/api-reference">API Reference</a></nav>',
+          "<main>raw</main>"
+        ].join("")
       },
       {
         snapshotTree: [
@@ -42,6 +45,9 @@ describe("buildReducedDocumentFromOracle", () => {
     expect(reduced.identity).toContain("Next.js Docs");
     expect(reduced.facts).toContain("Version 16");
     expect(reduced.structure.some((section) => section.heading === "content-nav")).toBe(true);
+    expect(reduced.structure[0]?.items.find((item) => item.label === "Getting Started")?.href).toBe(
+      "https://nextjs.org/docs/getting-started"
+    );
     expect(reduced.content.some((line) => line.includes("What is Next.js?"))).toBe(true);
     expect(reduced.interactions).toContain("Search documentation... ⌘K");
   });
@@ -77,9 +83,11 @@ describe("buildReducedDocumentFromOracle", () => {
 
     expect(reduced.mode).toBe("docs");
     expect(reduced.facts).toContain("Version 3.14");
-    expect(reduced.structure.some((section) => section.items.includes("API Reference"))).toBe(
-      true
-    );
+    expect(
+      reduced.structure.some((section) =>
+        section.items.some((item) => item.label === "API Reference")
+      )
+    ).toBe(true);
     expect(reduced.content).toContain("Parse and emit structured documents.");
     expect(reduced.interactions).toContain("Search docs");
   });
@@ -252,7 +260,10 @@ describe("buildReducedDocumentFromOracle", () => {
         finalUrl: "https://place.map.kakao.com/42",
         fetchedAt: "2026-03-19T00:00:00Z",
         title: "Seaside Kitchen | 카카오맵",
-        bodyHtml: "<main>raw</main>"
+        bodyHtml: [
+          '<nav><a href="/42/home">홈</a><a href="/42/menu">메뉴</a><a href="/42/reviews">후기</a></nav>',
+          "<main>raw</main>"
+        ].join("")
       },
       {
         snapshotTree: [
@@ -280,7 +291,12 @@ describe("buildReducedDocumentFromOracle", () => {
     expect(reduced.identity).toContain("Seaside Kitchen");
     expect(reduced.facts).toContain("평점 4.6");
     expect(reduced.facts).toContain("영업시간 11:00-22:00");
-    expect(reduced.structure.some((section) => section.items.includes("메뉴"))).toBe(true);
+    expect(
+      reduced.structure.some((section) => section.items.some((item) => item.label === "메뉴"))
+    ).toBe(true);
+    expect(reduced.structure[0]?.items.find((item) => item.label === "메뉴")?.href).toBe(
+      "https://place.map.kakao.com/42/menu"
+    );
     expect(reduced.content).toContain("국물이 진한 점심 식당");
     expect(reduced.interactions).toContain("공유");
   });
@@ -314,7 +330,9 @@ describe("buildReducedDocumentFromOracle", () => {
     );
 
     expect(reduced.mode).toBe("forum-qna");
-    expect(reduced.structure.some((section) => section.items.includes("Accepted"))).toBe(true);
+    expect(
+      reduced.structure.some((section) => section.items.some((item) => item.label === "Accepted"))
+    ).toBe(true);
     expect(reduced.content).toContain("I need to parse a quoted CSV file.");
     expect(reduced.interactions).toContain("Answer");
   });
@@ -350,7 +368,9 @@ describe("buildReducedDocumentFromOracle", () => {
     );
 
     expect(reduced.mode).toBe("marketing-media");
-    expect(reduced.structure.some((section) => section.items.includes("Pricing"))).toBe(true);
+    expect(
+      reduced.structure.some((section) => section.items.some((item) => item.label === "Pricing"))
+    ).toBe(true);
     expect(reduced.content).toContain("Build faster internal tools.");
     expect(reduced.interactions).toContain("Get started");
   });
@@ -423,7 +443,15 @@ describe("buildReducedDocumentFromOracle", () => {
       mode: "docs",
       identity: ["Example"],
       facts: ["Version 1"],
-      structure: [{ heading: "content-nav", items: ["Getting Started", "API Reference"] }],
+      structure: [
+        {
+          heading: "content-nav",
+          items: [
+            { label: "Getting Started", href: "https://example.com/getting-started" },
+            { label: "API Reference" }
+          ]
+        }
+      ],
       content: ["Example body"],
       interactions: ["Search"]
     });
@@ -433,7 +461,8 @@ describe("buildReducedDocumentFromOracle", () => {
     expect(html).toContain('<nav data-layer="structure"');
     expect(html).toContain('<article data-layer="content">');
     expect(html).toContain('<section data-layer="interactions">');
-    expect(html).toContain("Getting Started");
+    expect(html).toContain('href="https://example.com/getting-started"');
+    expect(html).toContain("<span>API Reference</span>");
     expect(html).toContain("Search");
   });
 });

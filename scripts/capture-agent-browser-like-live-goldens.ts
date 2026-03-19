@@ -89,7 +89,10 @@ function flattenReducedDocument(reduced: ReducedDocument) {
     reduced.title,
     ...reduced.identity,
     ...reduced.facts,
-    ...reduced.structure.flatMap((section) => [section.heading, ...section.items]),
+    ...reduced.structure.flatMap((section) => [
+      section.heading,
+      ...section.items.flatMap((item) => [item.label, ...(item.href ? [item.href] : [])])
+    ]),
     ...reduced.content,
     ...reduced.interactions
   ].join("\n");

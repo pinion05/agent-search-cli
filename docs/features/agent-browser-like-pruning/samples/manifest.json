@@ -13,7 +13,7 @@
       "finalUrl": "https://docs.python.org/3/library/json.html",
       "fetchedAt": "2026-03-19T00:00:00Z",
       "title": "JSON Module Docs",
-      "bodyHtml": "<header><nav><a>Overview</a><a>How to Use</a><a>API Reference</a><button>Search docs</button></nav></header><main><article><h1>JSON Module Docs</h1><p>Parse and emit structured documents.</p><h2>How to encode custom objects</h2><p>The module always produces string output.</p></article></main>",
+      "bodyHtml": "<header><nav><a href=\"/overview\">Overview</a><a href=\"/how-to\">How to Use</a><a href=\"/api-reference\">API Reference</a><button>Search docs</button></nav></header><main><article><h1>JSON Module Docs</h1><p>Parse and emit structured documents.</p><h2>How to encode custom objects</h2><p>The module always produces string output.</p></article></main>",
       "mode": "docs",
       "identity": [
         "JSON Module Docs",
@@ -26,15 +26,25 @@
         {
           "heading": "content-nav",
           "items": [
-            "Overview",
-            "API Reference"
+            {
+              "label": "Overview",
+              "href": "https://docs.python.org/overview"
+            },
+            {
+              "label": "API Reference",
+              "href": "https://docs.python.org/api-reference"
+            }
           ]
         },
         {
           "heading": "tools",
           "items": [
-            "Search docs",
-            "Send feedback"
+            {
+              "label": "Search docs"
+            },
+            {
+              "label": "Send feedback"
+            }
           ]
         }
       ],
@@ -64,7 +74,7 @@
       "finalUrl": "https://pypi.org/project/httpx/",
       "fetchedAt": "2026-03-19T00:00:00Z",
       "title": "httpx · PyPI",
-      "bodyHtml": "<aside><a>Readme</a><a>Versions</a><button>Copy install command</button></aside><main><article><h1>httpx</h1><p>A next-generation HTTP client.</p><pre>pip install httpx</pre><p>License BSD-3-Clause</p></article></main>",
+      "bodyHtml": "<aside><a href=\"/project/httpx/#readme\">Readme</a><a href=\"/project/httpx/#history\">Versions</a><a href=\"https://www.python-httpx.org/\">Homepage</a><a href=\"https://github.com/encode/httpx\">Repository</a><button>Copy install command</button></aside><main><article><h1>httpx</h1><p>A next-generation HTTP client.</p><pre>pip install httpx</pre><p>License BSD-3-Clause</p></article></main>",
       "mode": "package-page",
       "identity": [
         "httpx · PyPI",
@@ -82,15 +92,27 @@
         {
           "heading": "tabs",
           "items": [
-            "Readme",
-            "Versions"
+            {
+              "label": "Readme",
+              "href": "https://pypi.org/project/httpx/#readme"
+            },
+            {
+              "label": "Versions",
+              "href": "https://pypi.org/project/httpx/#history"
+            }
           ]
         },
         {
           "heading": "meta-links",
           "items": [
-            "Homepage https://www.python-httpx.org/",
-            "Repository github.com/encode/httpx"
+            {
+              "label": "Homepage https://www.python-httpx.org/",
+              "href": "https://www.python-httpx.org/"
+            },
+            {
+              "label": "Repository github.com/encode/httpx",
+              "href": "https://github.com/encode/httpx"
+            }
           ]
         }
       ],
@@ -133,7 +155,9 @@
         {
           "heading": "selected-panel",
           "items": [
-            "조용한 분위기와 늦은 영업시간"
+            {
+              "label": "조용한 분위기와 늦은 영업시간"
+            }
           ]
         }
       ],
@@ -161,7 +185,7 @@
       "finalUrl": "https://place.map.kakao.com/42",
       "fetchedAt": "2026-03-19T00:00:00Z",
       "title": "Seaside Kitchen | 카카오맵",
-      "bodyHtml": "<header><nav><a>홈</a><a>메뉴</a><a>후기</a><button>공유</button></nav></header><main><section><h1>Seaside Kitchen</h1><p>한식</p><p>국물이 진한 점심 식당</p><p>평점 4.6</p><p>영업시간 11:00-22:00</p><p>주소 바다로 42</p></section></main>",
+      "bodyHtml": "<header><nav><a href=\"/42/home\">홈</a><a href=\"/42/menu\">메뉴</a><a href=\"/42/reviews\">후기</a><button>공유</button></nav></header><main><section><h1>Seaside Kitchen</h1><p>한식</p><p>국물이 진한 점심 식당</p><p>평점 4.6</p><p>영업시간 11:00-22:00</p><p>주소 바다로 42</p></section></main>",
       "mode": "place-detail",
       "identity": [
         "Seaside Kitchen",
@@ -178,9 +202,18 @@
         {
           "heading": "tabs",
           "items": [
-            "홈",
-            "메뉴",
-            "후기"
+            {
+              "label": "홈",
+              "href": "https://place.map.kakao.com/42/home"
+            },
+            {
+              "label": "메뉴",
+              "href": "https://place.map.kakao.com/42/menu"
+            },
+            {
+              "label": "후기",
+              "href": "https://place.map.kakao.com/42/reviews"
+            }
           ]
         }
       ],
@@ -207,7 +240,7 @@
       "finalUrl": "https://stackoverflow.com/questions/1/example",
       "fetchedAt": "2026-03-19T00:00:00Z",
       "title": "How do I parse CSV safely? - Stack Overflow",
-      "bodyHtml": "<header><nav><a>Accepted</a><a>Answers</a><a>Comments</a></nav></header><main><article><h1>How do I parse CSV safely?</h1><p>I need to parse a quoted CSV file.</p><p>Use a real CSV parser instead of split.</p><button>Answer</button></article></main>",
+      "bodyHtml": "<header><nav><a href=\"#accepted-answer\">Accepted</a><a href=\"#answers\">Answers</a><a href=\"#comments\">Comments</a></nav></header><main><article><h1>How do I parse CSV safely?</h1><p>I need to parse a quoted CSV file.</p><p>Use a real CSV parser instead of split.</p><button>Answer</button></article></main>",
       "mode": "forum-qna",
       "identity": [
         "How do I parse CSV safely?",
@@ -218,9 +251,18 @@
         {
           "heading": "sort-and-flow",
           "items": [
-            "Accepted",
-            "Answers",
-            "Comments"
+            {
+              "label": "Accepted",
+              "href": "https://stackoverflow.com/questions/1/example#accepted-answer"
+            },
+            {
+              "label": "Answers",
+              "href": "https://stackoverflow.com/questions/1/example#answers"
+            },
+            {
+              "label": "Comments",
+              "href": "https://stackoverflow.com/questions/1/example#comments"
+            }
           ]
         }
       ],
@@ -252,7 +294,7 @@
       "finalUrl": "https://apple.com/acme-cloud",
       "fetchedAt": "2026-03-19T00:00:00Z",
       "title": "Acme Cloud",
-      "bodyHtml": "<header><nav><a>Products</a><a>Pricing</a><a>Developers</a></nav></header><main><section><h1>Acme Cloud</h1><p>Build faster internal tools.</p><p>Deploy automation across your team.</p><button>Get started</button></section></main>",
+      "bodyHtml": "<header><nav><a href=\"/products\">Products</a><a href=\"/pricing\">Pricing</a><a href=\"/developers\">Developers</a></nav></header><main><section><h1>Acme Cloud</h1><p>Build faster internal tools.</p><p>Deploy automation across your team.</p><a href=\"/signup\">Get started</a></section></main>",
       "mode": "marketing-media",
       "identity": [
         "Acme Cloud",
@@ -265,18 +307,36 @@
         {
           "heading": "site-ia",
           "items": [
-            "Products",
-            "Pricing",
-            "Developers",
-            "Compare plans"
+            {
+              "label": "Products",
+              "href": "https://apple.com/products"
+            },
+            {
+              "label": "Pricing",
+              "href": "https://apple.com/pricing"
+            },
+            {
+              "label": "Developers",
+              "href": "https://apple.com/developers"
+            },
+            {
+              "label": "Compare plans"
+            }
           ]
         },
         {
           "heading": "calls-to-action",
           "items": [
-            "Get started",
-            "Learn more",
-            "Compare plans"
+            {
+              "label": "Get started",
+              "href": "https://apple.com/signup"
+            },
+            {
+              "label": "Learn more"
+            },
+            {
+              "label": "Compare plans"
+            }
           ]
         }
       ],

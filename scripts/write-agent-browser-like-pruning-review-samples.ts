@@ -21,7 +21,7 @@ const samples: Sample[] = [
     rawHtml: [
       "<!doctype html>",
       "<html><head><title>JSON Module Docs</title></head><body>",
-      "<header><nav><a>Overview</a><a>How to Use</a><a>API Reference</a><button>Search docs</button></nav></header>",
+      "<header><nav><a href=\"/overview\">Overview</a><a href=\"/how-to\">How to Use</a><a href=\"/api-reference\">API Reference</a><button>Search docs</button></nav></header>",
       "<main><article><h1>JSON Module Docs</h1><p>Parse and emit structured documents.</p><h2>How to encode custom objects</h2><p>The module always produces string output.</p></article></main>",
       "</body></html>"
     ].join(""),
@@ -31,7 +31,7 @@ const samples: Sample[] = [
       fetchedAt: "2026-03-19T00:00:00Z",
       title: "JSON Module Docs",
       bodyHtml: [
-        "<header><nav><a>Overview</a><a>How to Use</a><a>API Reference</a><button>Search docs</button></nav></header>",
+        "<header><nav><a href=\"/overview\">Overview</a><a href=\"/how-to\">How to Use</a><a href=\"/api-reference\">API Reference</a><button>Search docs</button></nav></header>",
         "<main><article><h1>JSON Module Docs</h1><p>Parse and emit structured documents.</p><h2>How to encode custom objects</h2><p>The module always produces string output.</p></article></main>"
       ].join("")
     },
@@ -61,7 +61,7 @@ const samples: Sample[] = [
     rawHtml: [
       "<!doctype html>",
       "<html><head><title>httpx · PyPI</title></head><body>",
-      "<aside><a>Readme</a><a>Versions</a><button>Copy install command</button></aside>",
+      "<aside><a href=\"/project/httpx/#readme\">Readme</a><a href=\"/project/httpx/#history\">Versions</a><a href=\"https://www.python-httpx.org/\">Homepage</a><a href=\"https://github.com/encode/httpx\">Repository</a><button>Copy install command</button></aside>",
       "<main><article><h1>httpx</h1><p>A next-generation HTTP client.</p><pre>pip install httpx</pre><p>License BSD-3-Clause</p></article></main>",
       "</body></html>"
     ].join(""),
@@ -71,7 +71,7 @@ const samples: Sample[] = [
       fetchedAt: "2026-03-19T00:00:00Z",
       title: "httpx · PyPI",
       bodyHtml: [
-        "<aside><a>Readme</a><a>Versions</a><button>Copy install command</button></aside>",
+        "<aside><a href=\"/project/httpx/#readme\">Readme</a><a href=\"/project/httpx/#history\">Versions</a><a href=\"https://www.python-httpx.org/\">Homepage</a><a href=\"https://github.com/encode/httpx\">Repository</a><button>Copy install command</button></aside>",
         "<main><article><h1>httpx</h1><p>A next-generation HTTP client.</p><pre>pip install httpx</pre><p>License BSD-3-Clause</p></article></main>"
       ].join("")
     },
@@ -138,7 +138,7 @@ const samples: Sample[] = [
     rawHtml: [
       "<!doctype html>",
       "<html><head><title>Seaside Kitchen | 카카오맵</title></head><body>",
-      "<header><nav><a>홈</a><a>메뉴</a><a>후기</a><button>공유</button></nav></header>",
+      "<header><nav><a href=\"/42/home\">홈</a><a href=\"/42/menu\">메뉴</a><a href=\"/42/reviews\">후기</a><button>공유</button></nav></header>",
       "<main><section><h1>Seaside Kitchen</h1><p>한식</p><p>국물이 진한 점심 식당</p><p>평점 4.6</p><p>영업시간 11:00-22:00</p><p>주소 바다로 42</p></section></main>",
       "</body></html>"
     ].join(""),
@@ -148,7 +148,7 @@ const samples: Sample[] = [
       fetchedAt: "2026-03-19T00:00:00Z",
       title: "Seaside Kitchen | 카카오맵",
       bodyHtml: [
-        "<header><nav><a>홈</a><a>메뉴</a><a>후기</a><button>공유</button></nav></header>",
+        "<header><nav><a href=\"/42/home\">홈</a><a href=\"/42/menu\">메뉴</a><a href=\"/42/reviews\">후기</a><button>공유</button></nav></header>",
         "<main><section><h1>Seaside Kitchen</h1><p>한식</p><p>국물이 진한 점심 식당</p><p>평점 4.6</p><p>영업시간 11:00-22:00</p><p>주소 바다로 42</p></section></main>"
       ].join("")
     },
@@ -176,7 +176,7 @@ const samples: Sample[] = [
     rawHtml: [
       "<!doctype html>",
       "<html><head><title>How do I parse CSV safely? - Stack Overflow</title></head><body>",
-      "<header><nav><a>Accepted</a><a>Answers</a><a>Comments</a></nav></header>",
+      "<header><nav><a href=\"#accepted-answer\">Accepted</a><a href=\"#answers\">Answers</a><a href=\"#comments\">Comments</a></nav></header>",
       "<main><article><h1>How do I parse CSV safely?</h1><p>I need to parse a quoted CSV file.</p><p>Use a real CSV parser instead of split.</p><button>Answer</button></article></main>",
       "</body></html>"
     ].join(""),
@@ -186,7 +186,7 @@ const samples: Sample[] = [
       fetchedAt: "2026-03-19T00:00:00Z",
       title: "How do I parse CSV safely? - Stack Overflow",
       bodyHtml: [
-        "<header><nav><a>Accepted</a><a>Answers</a><a>Comments</a></nav></header>",
+        "<header><nav><a href=\"#accepted-answer\">Accepted</a><a href=\"#answers\">Answers</a><a href=\"#comments\">Comments</a></nav></header>",
         "<main><article><h1>How do I parse CSV safely?</h1><p>I need to parse a quoted CSV file.</p><p>Use a real CSV parser instead of split.</p><button>Answer</button></article></main>"
       ].join("")
     },
@@ -211,8 +211,8 @@ const samples: Sample[] = [
     rawHtml: [
       "<!doctype html>",
       "<html><head><title>Acme Cloud</title></head><body>",
-      "<header><nav><a>Products</a><a>Pricing</a><a>Developers</a></nav></header>",
-      "<main><section><h1>Acme Cloud</h1><p>Build faster internal tools.</p><p>Deploy automation across your team.</p><button>Get started</button></section></main>",
+      "<header><nav><a href=\"/products\">Products</a><a href=\"/pricing\">Pricing</a><a href=\"/developers\">Developers</a></nav></header>",
+      "<main><section><h1>Acme Cloud</h1><p>Build faster internal tools.</p><p>Deploy automation across your team.</p><a href=\"/signup\">Get started</a></section></main>",
       "</body></html>"
     ].join(""),
     document: {
@@ -221,8 +221,8 @@ const samples: Sample[] = [
       fetchedAt: "2026-03-19T00:00:00Z",
       title: "Acme Cloud",
       bodyHtml: [
-        "<header><nav><a>Products</a><a>Pricing</a><a>Developers</a></nav></header>",
-        "<main><section><h1>Acme Cloud</h1><p>Build faster internal tools.</p><p>Deploy automation across your team.</p><button>Get started</button></section></main>"
+        "<header><nav><a href=\"/products\">Products</a><a href=\"/pricing\">Pricing</a><a href=\"/developers\">Developers</a></nav></header>",
+        "<main><section><h1>Acme Cloud</h1><p>Build faster internal tools.</p><p>Deploy automation across your team.</p><a href=\"/signup\">Get started</a></section></main>"
       ].join("")
     },
     oracle: {

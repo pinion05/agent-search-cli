@@ -1,9 +1,11 @@
 import { chromium } from "playwright";
+import { parseHTML } from "linkedom";
 import { getEnhancedSnapshot } from "agent-browser/dist/snapshot.js";
 
 import type {
   AgentBrowserOracle,
   ReducedDocument,
+  ReducedDocumentLink,
   ReducedDocumentSection,
   RenderedDocument
 } from "./types";
@@ -134,6 +136,7 @@ export function buildReducedDocumentFromOracle(
   oracle: AgentBrowserOracle
 ): ReducedDocument {
   const mode = detectMode(document.finalUrl || document.url);
+  const linkTargets = buildLinkTargets(document);
   const snapshotLines = splitLines(oracle.snapshotTree);
   const interactiveLines = splitLines(oracle.interactiveTree);
   const snapshotLabels = extractQuotedLabels(snapshotLines);
@@ -145,7 +148,7 @@ export function buildReducedDocumentFromOracle(
     mode,
     identity: buildIdentity(document.title, mode, textChunks, snapshotLabels, interactiveLabels),
     facts: buildFacts(mode, textChunks, snapshotLabels),
-    structure: buildStructure(mode, textChunks, snapshotLabels, interactiveLabels),
+    structure: buildStructure(mode, textChunks, snapshotLabels, interactiveLabels, linkTargets),
     content: buildContent(mode, textChunks, snapshotLabels, interactiveLabels),
     interactions: buildInteractions(mode, interactiveLabels, snapshotLabels)
   };
@@ -188,7 +191,11 @@ export function renderReducedDocumentHtml(document: ReducedDocument): string {
         `<nav data-layer="structure" aria-label="${escapeHtml(section.heading)}"><h2>${escapeHtml(
           section.heading
         )}</h2><ul>${section.items
-          .map((item) => `<li><a href="#">${escapeHtml(item)}</a></li>`)
+          .map((item) =>
+            item.href
+              ? `<li><a href="${escapeHtmlAttribute(item.href)}">${escapeHtml(item.label)}</a></li>`
+              : `<li><span>${escapeHtml(item.label)}</span></li>`
+          )
           .join("")}</ul></nav>`
     )
     .join("");
@@ -309,17 +316,18 @@ function buildStructure(
   mode: ReducedDocument["mode"],
   textChunks: string[],
   snapshotLabels: string[],
-  interactiveLabels: string[]
+  interactiveLabels: string[],
+  linkTargets: ReducedDocumentLink[]
 ): ReducedDocumentSection[] {
   if (mode === "docs") {
     return compactSections([
       {
         heading: "content-nav",
-        items: pickMatched(snapshotLabels, DOCS_NAV_PATTERNS, 8, 60)
+        items: toLinkItems(pickMatched(snapshotLabels, DOCS_NAV_PATTERNS, 8, 60), linkTargets)
       },
       {
         heading: "tools",
-        items: pickMatched(interactiveLabels, DOCS_INTERACTION_PATTERNS, 4, 40)
+        items: toLinkItems(pickMatched(interactiveLabels, DOCS_INTERACTION_PATTERNS, 4, 40), linkTargets)
       }
     ]);
   }
@@ -328,11 +336,11 @@ function buildStructure(
     return compactSections([
       {
         heading: "tabs",
-        items: pickMatched(snapshotLabels, PACKAGE_TAB_PATTERNS, 6, 40)
+        items: toLinkItems(pickMatched(snapshotLabels, PACKAGE_TAB_PATTERNS, 6, 40), linkTargets)
       },
       {
         heading: "meta-links",
-        items: pickMatched(snapshotLabels, PACKAGE_FACT_PATTERNS, 6, 80)
+        items: toLinkItems(pickMatched(snapshotLabels, PACKAGE_FACT_PATTERNS, 6, 80), linkTargets)
       }
     ]);
   }
@@ -341,7 +349,7 @@ function buildStructure(
     return compactSections([
       {
         heading: "tabs",
-        items: pickMatched(snapshotLabels, PLACE_TAB_PATTERNS, 8, 20)
+        items: toLinkItems(pickMatched(snapshotLabels, PLACE_TAB_PATTERNS, 8, 20), linkTargets)
       }
     ]);
   }
@@ -350,15 +358,18 @@ function buildStructure(
     return compactSections([
       {
         heading: "selected-panel",
-        items: pickMeaningfulText([...snapshotLabels, ...textChunks], {
-          maxItems: 4,
-          maxLen: 120,
-          excludePatterns: [
-            ...MAP_PANEL_EXCLUDE_PATTERNS,
-            ...MAP_INTERACTION_PATTERNS,
-            ...MAP_FACT_PATTERNS
-          ]
-        })
+        items: toLinkItems(
+          pickMeaningfulText([...snapshotLabels, ...textChunks], {
+            maxItems: 4,
+            maxLen: 120,
+            excludePatterns: [
+              ...MAP_PANEL_EXCLUDE_PATTERNS,
+              ...MAP_INTERACTION_PATTERNS,
+              ...MAP_FACT_PATTERNS
+            ]
+          }),
+          linkTargets
+        )
       }
     ]);
   }
@@ -367,7 +378,7 @@ function buildStructure(
     return compactSections([
       {
         heading: "sort-and-flow",
-        items: pickMatched(snapshotLabels, FORUM_FLOW_PATTERNS, 8, 80)
+        items: toLinkItems(pickMatched(snapshotLabels, FORUM_FLOW_PATTERNS, 8, 80), linkTargets)
       }
     ]);
   }
@@ -376,15 +387,18 @@ function buildStructure(
     return compactSections([
       {
         heading: "site-ia",
-        items: pickMatched(snapshotLabels, MARKETING_IA_PATTERNS, 10, 60)
+        items: toLinkItems(pickMatched(snapshotLabels, MARKETING_IA_PATTERNS, 10, 60), linkTargets)
       },
       {
         heading: "calls-to-action",
-        items: pickMatched(
-          [...interactiveLabels, ...textChunks],
-          MARKETING_CTA_PATTERNS,
-          6,
-          60
+        items: toLinkItems(
+          pickMatched(
+            [...interactiveLabels, ...textChunks],
+            MARKETING_CTA_PATTERNS,
+            6,
+            60
+          ),
+          linkTargets
         )
       }
     ]);
@@ -393,11 +407,14 @@ function buildStructure(
   return compactSections([
     {
       heading: "structure",
-      items: pickMeaningfulText(snapshotLabels, {
-        maxItems: 6,
-        maxLen: 60,
-        excludePatterns: [...GENERIC_SHELL_PATTERNS]
-      })
+      items: toLinkItems(
+        pickMeaningfulText(snapshotLabels, {
+          maxItems: 6,
+          maxLen: 60,
+          excludePatterns: [...GENERIC_SHELL_PATTERNS]
+        }),
+        linkTargets
+      )
     }
   ]);
 }
@@ -545,6 +562,74 @@ function compactSections(sections: ReducedDocumentSection[]) {
   return sections.filter((section) => section.items.length > 0);
 }
 
+function buildLinkTargets(document: RenderedDocument) {
+  const { document: parsed } = parseHTML(
+    `<!doctype html><html><head><title>${escapeHtml(document.title)}</title></head><body>${document.bodyHtml}</body></html>`
+  );
+  const baseUrl = document.finalUrl || document.url;
+  const targets: ReducedDocumentLink[] = [];
+
+  for (const anchor of Array.from(parsed.querySelectorAll("a[href]"))) {
+    const label = normalizeWhitespace(anchor.textContent ?? "");
+    const rawHref = anchor.getAttribute("href") ?? "";
+    const href = resolveHref(rawHref, baseUrl);
+
+    if (label === "" || href === undefined) continue;
+    targets.push({ label, href });
+  }
+
+  return dedupeLinks(targets);
+}
+
+function resolveHref(rawHref: string, baseUrl: string) {
+  const href = normalizeWhitespace(rawHref);
+  if (href === "" || href.startsWith("javascript:")) return undefined;
+
+  try {
+    return new URL(href, baseUrl).toString();
+  } catch {
+    return undefined;
+  }
+}
+
+function toLinkItems(labels: string[], linkTargets: ReducedDocumentLink[]) {
+  return labels.map((label) => ({
+    label,
+    href: matchHref(label, linkTargets)
+  }));
+}
+
+function matchHref(label: string, linkTargets: ReducedDocumentLink[]) {
+  const normalizedLabel = normalizeWhitespace(label);
+  let bestMatch: ReducedDocumentLink | undefined;
+
+  for (const target of linkTargets) {
+    const targetLabel = normalizeWhitespace(target.label);
+    if (targetLabel === "") continue;
+
+    const exactMatch = normalizedLabel.localeCompare(targetLabel, undefined, { sensitivity: "accent" }) === 0;
+    const prefixMatch =
+      normalizedLabel.startsWith(`${targetLabel} `) || targetLabel.startsWith(`${normalizedLabel} `);
+
+    if (!exactMatch && !prefixMatch) continue;
+    if (!bestMatch || targetLabel.length > bestMatch.label.length) {
+      bestMatch = target;
+    }
+  }
+
+  return bestMatch?.href;
+}
+
+function dedupeLinks(links: ReducedDocumentLink[]) {
+  const seen = new Set<string>();
+  return links.filter((link) => {
+    const key = `${normalizeWhitespace(link.label)}|${link.href ?? ""}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function splitLines(text: string) {
   return text
     .split(/\n+/)
@@ -651,4 +736,8 @@ function escapeHtml(value: string) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function escapeHtmlAttribute(value: string) {
+  return escapeHtml(value);
 }

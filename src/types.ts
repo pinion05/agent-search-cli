@@ -26,9 +26,14 @@ export type AgentBrowserOracle = {
   innerText: string;
 };
 
+export type ReducedDocumentLink = {
+  label: string;
+  href?: string;
+};
+
 export type ReducedDocumentSection = {
   heading: string;
-  items: string[];
+  items: ReducedDocumentLink[];
 };
 
 export type ReducedDocument = RenderedDocument & {
