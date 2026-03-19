@@ -105,18 +105,21 @@ Most important mismatch:
 - the doc says acceptance requires a real review worker to open raw/pruned samples and return `ACCEPT`
 - that review evidence is not present in this branch
 
+## Cross-Worker Note
+
+Worker 2 reported follow-up fixes for dependency/type/runtime issues after this local review pass. I did **not** independently verify those fixes in this worktree, so the technical evidence above is recorded as baseline review evidence only.
+
+Even if the dependency/type/runtime lane is resolved, the approval-readiness blockers below still remain for heuristics/tests/docs.
+
 ## What Blocks ACCEPT Right Now
 
-1. failing type-check
-2. undeclared / ambient `agent-browser` resolution
-3. fixture-specific heuristics instead of general semantic heuristics
-4. tests that validate the same fixture-specific assumptions instead of generalization
-5. missing BrowserOS raw-vs-reduced acceptance evidence
+1. fixture-specific heuristics instead of general semantic heuristics
+2. tests that validate the same fixture-specific assumptions instead of generalization
+3. missing BrowserOS raw-vs-reduced acceptance evidence
 
 ## Recommended Next Steps
 
-1. make dependency and Playwright resolution repo-local and reproducible
-2. get `bunx tsc --noEmit` clean enough to remove the current blocking errors
-3. replace brand-specific heuristic matching with mode-level semantic extraction rules
-4. add unseen-fixture tests plus at least one integration test for oracle collection
-5. capture real raw/pruned samples and complete the BrowserOS acceptance review described in `implementation.md`
+1. land and verify the dependency/type/runtime fixes from the worker-2 lane
+2. replace brand-specific heuristic matching with mode-level semantic extraction rules
+3. add unseen-fixture tests plus at least one integration test for oracle collection
+4. capture real raw/pruned samples and complete the BrowserOS acceptance review described in `implementation.md`
